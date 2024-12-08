@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation - Résumé des Choix</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .header1 { background-color: #6a5acd; }
+        .header2 { background-color: #4682b4; }
+        .header3 { background-color: #32cd32; }
+        .header4 { background-color: #ff8c00; }
+        .header5 { background-color: #dc143c; }
+        .header6 { background-color: #8b4513; }
+
+        .question {
+            padding: 15px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-top: 1px solid #ddd;
+        }
+        .option input {
+            margin-right: 10px;
+        }
+        .option:hover {
+            background-color: #f0f8ff;
+        }
+
+        .result {
+            margin: 20px auto;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: space-between;
+        }
+
+        .form-container {
+            flex-grow: 1;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            align-self: center;
+            margin-bottom: 20px;
+            background-color: #d22323;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            
+        }
+        .center-container {
+            display: flex;
+            justify-content: center; /* Centre horizontalement */
+            align-items: center;     /* Centre verticalement */
+                 /* Utilise toute la hauteur de la fenêtre */
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+<form action="echelle.katz.php" method="POST">
+    
+    <!-- Section 1: Se Laver -->
+<div class="container">
+    <div class="header header1">SE LAVER</div>
+    <div class="question">Sélectionnez une option :</div>
+    <div class="option">
+        <input type="radio" name="se_laver" value="1" onchange="updateSummary()">
+        <label>1.Est capable de se laver complètement sans aucune aide</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="se_laver" value="2" onchange="updateSummary()">
+        <label>2.A besoin d'une aide partielle pour se laver au-dessus ou en dessous de la ceinture</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="se_laver" value="3" onchange="updateSummary()">
+        <label>3.A besoin d'une aide partielle pour se laver tant au-dessus qu'en-dessous de la ceinture</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="se_laver" value="4" onchange="updateSummary()">
+        <label>4.Doit être entièrement aidé pour se laver tant au-dessus qu'en-dessous de la ceinture</label>
+    </div>
+</div>
+
+<!-- Section 2: S'Habiller -->
+<div class="container">
+    <div class="header header2">S'HABILLER</div>
+    <div class="question">Sélectionnez une option :</div>
+    <div class="option">
+        <input type="radio" name="s_habiller" value="1" onchange="updateSummary()">
+        <label>1.est capable de s'habiller et se déshabiller complètement sans aucune aide</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="s_habiller" value="2" onchange="updateSummary()">
+        <label>2. a besoin d'une aide partielle pour s'habiller au dessus ou en dessous de la ceinture </label>
+    </div>
+    <div class="option">
+        <input type="radio" name="s_habiller" value="3" onchange="updateSummary()">
+        <label>3. a besoin d'une aide partielle pour s'habiller tant au-dessus qu'en-dessous de la ceinture</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="s_habiller" value="4" onchange="updateSummary()">
+        <label>4.doit être entièrement aidé pour s'habiller tant au-dessus qu'en-dessous de la ceinture</label>
+    </div>
+</div>
+
+<!-- Section 3: Transfert et Déplacement -->
+<div class="container">
+    <div class="header header3">TRANSFERT ET DÉPLACEMENT</div>
+    <div class="question">Sélectionnez une option :</div>
+    <div class="option">
+        <input type="radio" name="transfert" value="1" onchange="updateSummary()">
+        <label>1. est autonome pour le transfert et se déplace de facon entièrement indépendante,sans auxiliaire mécanique ni aide de tier personne</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="transfert" value="2" onchange="updateSummary()">
+        <label>2.est autonome pour le transfert et ses déplacements moyennant l'utilisation d'auxiliaire mécanique béquille(s), chaise roulante  </label>
+    </div>
+    <div class="option">
+        <input type="radio" name="transfert" value="3" onchange="updateSummary()">
+        <label>3.a absolument besoin de l'aide de tiers pour au moins un des transfert et/ou déplacements</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="transfert" value="4" onchange="updateSummary()">
+        <label>4. est grabataire ou en chaise roulante et dépend entièrement des autres pour se déplacer</label>
+    </div>
+</div>
+
+<!-- Section 4: aller au toilette  -->
+<div class="container">
+    <div class="header header4">ALLER A LA TOILETTE</div>
+    <div class="question">Sélectionnez une option :</div>
+    <div class="option">
+        <input type="radio" name="toilette" value="1" onchange="updateSummary()">
+        <label>1. Est capable d'aller seule à la toilette, de s'habiller ou de s'essuyer</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="toilette" value="2" onchange="updateSummary()">
+        <label>2. A besoin d'aide pour un des trois items : se déplacer ou s'habiller ou s'essuyer</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="toilette" value="3" onchange="updateSummary()">
+        <label>3. A besoin d'aide pour deux des trois items : se déplacer et/ ou s'habiller et/ou s'essuyer</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="toilette" value="4" onchange="updateSummary()">
+        <label>4 . A besoins d'aide pour les trois items : se déplacer et s'habiller et s'essuyer</label>
+    </div>
+</div>
+
+<!-- Section 5: continence -->
+<div class="container">
+    <div class="header header5">CONTINENCE</div>
+    <div class="question">Sélectionnez une option :</div>
+    <div class="option">
+        <input type="radio" name="continence" value="1" onchange="updateSummary()">
+        <label>1.Est continent pour les urines et les selles</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="continence" value="2" onchange="updateSummary()">
+        <label>2. Est accidentellment incontinent pour les urines ou les selles (sonde vésicale ou anus artificiel compris)</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="continence" value="3" onchange="updateSummary()">
+        <label>3. Est incontinent pour les urines (y compris exercices de miction) ou les selles</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="continence" value="4" onchange="updateSummary()">
+        <label>4. Est incontinent pour les urines et les selles</label>
+    </div>
+</div>
+
+<!-- Section 6: Manger -->
+<div class="container">
+    <div class="header header6">MANGER</div>
+    <div class="question">Sélectionnez une option :</div>
+    <div class="option">
+        <input type="radio" name="manger" value="1" onchange="updateSummary()">
+        <label>1. Est capable de manger et de boire seul</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="manger" value="2" onchange="updateSummary()">
+        <label>2. A besoin d'une aide préalable pour manger et boire </label>
+    </div>
+    <div class="option">
+        <input type="radio" name="manger" value="3" onchange="updateSummary()">
+        <label>3.A besoin d'une aide partielle pendant qu'il mange ou boit</label>
+    </div>
+    <div class="option">
+        <input type="radio" name="manger" value="4" onchange="updateSummary()">
+        <label>4. Le patient est totalement dépendant pour manger et boire </label>
+    </div>
+</div>
+    <!-- Résultat -->
+    <div class="result" id="summary">SCORE : Aucun choix effectué</div>
+    <div class="center-container">
+        <button type="submit">Ajouter le Katz</button>
+    </div>
+
+
+</form>
+    
+
+    
+    
+</div>
+<script>
+    // Fonction pour mettre à jour le résumé des choix
+    function updateSummary() {
+        const choices = {
+            se_laver: document.querySelector('input[name="se_laver"]:checked')?.value || "-",
+            s_habiller: document.querySelector('input[name="s_habiller"]:checked')?.value || "-",
+            transfert: document.querySelector('input[name="transfert"]:checked')?.value || "-",
+            toilette: document.querySelector('input[name="toilette"]:checked')?.value || "-",
+            continence: document.querySelector('input[name="continence"]:checked')?.value || "-",
+            manger: document.querySelector('input[name="manger"]:checked')?.value || "-"
+        };
+
+        const summaryText = `
+            Résumé : 
+            ${choices.se_laver}, 
+            ${choices.s_habiller}, 
+            ${choices.transfert},
+            ${choices.toilette},
+            ${choices.continence}, 
+            ${choices.manger}
+        `;
+
+        document.getElementById('summary').textContent = summaryText;
+    }
+</script>
+
+</body>
+</html>

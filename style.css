@@ -1,0 +1,22 @@
+body{
+    background-color: rgb(5, 69, 125);
+}
+.btn1{
+    height: 20%;
+    margin-right: 15%;
+    color : black;
+    width: 5%; /* Largeur complète du formulaire */
+    padding: 15px; /* Espacement intérieur pour agrandir le bouton */
+    font-size: 26px; /* Taille du texte à l'intérieur du bouton */
+    background-color: #647f94; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    border: none; /* Suppression de la bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur en forme de main lorsqu'on survole */
+    transition: background-color 0.3s; /* Effet de transition pour le changement de couleur */
+}
+div{
+    text-align: center;
+    padding: 30px;
+
+}
