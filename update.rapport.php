@@ -4,10 +4,19 @@ try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
     echo "Connexion à la base de données réussie<br>";
 
+     // Vérifier si 'idRapport' existe dans $_POST
+     if (!isset($_POST['idRapport'])) {
+        die("Erreur : L'ID du rapport est manquant.");
+    }
+
     // Récupérer les valeurs du formulaire
-    $idmod = $_POST['idmod'];
+    $idmod = $_POST['idRapport'];
     $evaluationTraitement = $_POST['evaluationTraitement'];
     $observationClinique = $_POST['observationClinique'];
+
+        if (empty($idmod) || !is_numeric($idmod)) {
+            die("Erreur : L'ID du rapport est manquant ou invalide.");
+        }
 
         // Déterminer quelle colonne mettre à jour
         if (!empty($evaluationTraitement) && empty($observationClinique)) {
