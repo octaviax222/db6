@@ -19,19 +19,20 @@ try {
     $stmt->execute();
 
     echo "Le nombre de rapports dans la base de données est : <strong>" . $stmt->rowCount() . "</strong><br><br>";
-    
-    while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $idRapport = htmlspecialchars($ligne['idRapport']);
-        $evaluationTraitement = htmlspecialchars($ligne['evaluationTraitement']);
-        $observationClinique = htmlspecialchars($ligne['observationClinique']);
-        
-        echo "<tr>";
-        echo "<td>$idRapport</td>";
-        echo "<td>$evaluationTraitement</td>";
-        echo "<td>$observationClinique</td>";
-        echo "<td><a href='supprimer.rapport.html?id=$idRapport' class='btn btn-danger btn-sm'>Supprimer</a></td>";
-        echo "</tr>";
+    $rapports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (empty($rapports)) {
+        echo "<p>Aucun rapport trouvé pour NumeroInami : $numeroInami</p>";
+    } else {
+        foreach ($rapports as $ligne) {
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($ligne['idRapport']) . "</td>";
+            echo "<td>" . htmlspecialchars($ligne['evaluationTraitement']) . "</td>";
+            echo "<td>" . htmlspecialchars($ligne['observationClinique']) . "</td>";
+            echo "<td><a href='supprimer.rapport.html?id=" . htmlspecialchars($ligne['idRapport']) . "' class='btn btn-danger btn-sm'>Supprimer</a></td>";
+            echo "</tr>";
+        }
     }
+    
 } catch (Exception $e) {
     echo "<div class='alert alert-danger'>Erreur : " . htmlspecialchars($e->getMessage()) . "</div>";
 }
