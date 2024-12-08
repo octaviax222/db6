@@ -42,4 +42,8 @@ try {
     // Afficher l'erreur
     die('Erreur : ' . $e->getMessage());
 }
+
+if ($base ==TRUE){
+    header("Location:home.rapport.html");
+}
 ?>
