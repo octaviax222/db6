@@ -28,14 +28,18 @@ echo "Sexe : ".$sexe;
 echo "<br>";
 echo "Numéro Inami du médecin traitant (optionnel) : ".$numeroInami;
 echo "<br>";
+
 $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6','user6', 'user6');
 echo"Connexion réussie à la base de données<br>";
+
 $sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue,
 numeroDomicile, ville, sexe, numeroInami, idAssurabilite) VALUES ($numeroNISS,
-'$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe',
-'$numeroInami','$numeroAssu')";
+'$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe'," . 
+        (isset($numeroInami) ? $numeroInami : "NULL") . ",'$numeroAssu')";
+
 echo $sql;
 $Resultat = $base->exec($sql);
+
 echo $Resultat;
 if ($Resultat ==true){
 	header("Location:home.patient.html");
