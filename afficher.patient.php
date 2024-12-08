@@ -15,7 +15,7 @@ try {
         $num = htmlspecialchars($ligne['numeroDomicile']);
         $ville = htmlspecialchars($ligne['ville']);
         $sexe = htmlspecialchars($ligne['sexe']);
-        $inami = htmlspecialchars($ligne['numeroInami']);
+        $inami = isset($ligne['numeroInami']) ? htmlspecialchars($ligne['numeroInami']) : "";
         
         echo "<tr>";
         echo "<td>$niss</td>";
