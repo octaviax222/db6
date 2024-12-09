@@ -7,7 +7,7 @@ $description = $_POST['description'];
 $frequence = $_POST['frequence'];
 $heure = $_POST['heure'];
 $patients = $_POST['patients']; //récupérer le patient sélectionné
-$idInamiTypeSoin = $_POST['idInamiTypeSoin'];
+$idInamiTypeSoins = $_POST['idInamiTypeSoins'];
 
 $numeroInami = $_SESSION['numeroInami'];
 
@@ -19,7 +19,7 @@ echo "Brève description du soin (optionnel) : ".$description;
 echo "<br>";
 echo "Heure de la visite (optionnel) : ".$heure;
 echo "<br>";
-echo "ID du soin sélectionné : " . $idInamiTypeSoin;
+echo "ID du soin sélectionné : " . $idInamiTypeSoins;
 echo "<br>";
 
 try {
@@ -48,10 +48,20 @@ try {
         }
     }
 
-    if(!empty($idInamiTypeSoin))
+    if (!empty($idInamiTypeSoins)) {
+      
+        // Insertion dans la table `soins` avec l'ID du type de soin
+        $insertSoins = $base->prepare("INSERT INTO soins (idInamiTypeSoins) VALUES (:idInamiTypeSoins)");
+        $insertSoins->bindParam(':idInamiTypeSoins', $idInamiTypeSoins);
+        $insertSoins->execute();
+        $idSoins = $base->lastInsertId(); // Récupérer l'ID généré pour le soin
+        echo "Soin ajouté avec l'ID : " . $idSoins . "<br>";
+    } 
+
+    if(!empty($idSoins))
     {
-            $stmt = $base->prepare("INSERT INTO realise (idInamiTypeSoin,idVisite) VALUES (:idInamiTypeSoin, :idVisite)");
-            $stmt->bindParam(':idInamiTypeSoin',$idInamiTypeSoin);
+            $stmt = $base->prepare("INSERT INTO realise (idSoins,idVisite) VALUES (:idSoins, :idVisite)");
+            $stmt->bindParam(':idSoins',$idSoins);
             $stmt->bindParam(':idVisite',$idVisite);
             $stmt->execute();
             echo "ok";
