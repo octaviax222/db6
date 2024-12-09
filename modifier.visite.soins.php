@@ -30,15 +30,26 @@
                     <label for="heure">Heure de la visite</label>
                     <input type="time" class="form-control" id="heure" name="heure" placeholder="Heure de la visite">
                 </div>
+
                 <div class="form-group">
-                    <label for="idCalendrier">Calendrier associé</label>
-                    <input type="text" class="form-control" id="idCalendrier" name="idCalendrier" placeholder="Calendrier associé">
+                    <label for="typeSoins">Description type de soin</label>
+                    <select class="form-control" id="typeSoins" name="idInamiTypeSoins" required>
+                    <option value="">-- Sélectionnez un soin --</option>
+                        <?php
+
+                        $db = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
+
+                        $soinquery = "SELECT ts.idInamiTypeSoins, ts.descriptionTypeSoins FROM typeSoins ts";
+                        $stmt = $db->query($soinquery);
+                        $typeSoins = $stmt->fetchAll(PDO::FETCH_ASSOC); // On stocke les résultats dans un tableau associatif
+    
+                            foreach ($typeSoins as $soin) {
+                            echo '<option value="' . $soin['idInamiTypeSoins'] . '">' . htmlspecialchars($soin['descriptionTypeSoins']) . '</option>';
+                            }
+                        ?>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label for="idRapport">Numéro du rapport associé</label>
-                    <input type="text" class="form-control" id="idRapport" name="idRapport" placeholder="Numéro du rapport associé">
-                </div>
-                
+              
                 <button type="submit" class="btn btn-primary btn-block">Modifier le Patient</button>
             </form>
         </div>

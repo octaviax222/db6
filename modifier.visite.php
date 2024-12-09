@@ -9,8 +9,7 @@ try {
     $frequence = $_POST['frequence'];
     $description = $_POST['description'];
     $heure = $_POST['heure'];
-    $idCalendrier = $_POST['idCalendrier'];
-    $idRapport = $_POST['idRapport'];
+    $idInamiTypeSoins = $_POST['idInamiTypeSoins'];
 
     $updateFields = [];
 
@@ -29,13 +28,25 @@ try {
     if (!empty($heure)) {
         $updateFields[] = "heure = '$heure'";
     }
-    if (!empty($idCalendrier)) {
-        $updateFields[] = "idCalendrier = '$idCalendrier'";
-    }
-    if (!empty($idRapport)) {
-        $updateFields[] = "idRapport = $idRapport";
-    }
-    
+    if (!empty($idInamiTypeSoins)) {
+        // Jointure entre la table visite et soins pour mettre à jour idInamiTypeSoins dans la table soins
+        $sqlSoin = "
+            UPDATE soins s
+            INNER JOIN realise r ON r.idSoins = s.idSoins  -- Jointure avec la table realise sur idSoins
+            INNER JOIN visite v ON v.idVisite = r.idVisite  -- Jointure avec la table visite sur idVisite
+            SET s.idInamiTypeSoins = :idInamiTypeSoins
+            WHERE v.idVisite = :idVisite
+        ";
+
+        // Préparation de la requête
+        $stmtSoin = $base->prepare($sqlSoin);
+
+        // Exécution de la requête de mise à jour
+        $stmtSoin->execute([
+            ':idInamiTypeSoins' => $idInamiTypeSoins,
+            ':idVisite' => $idVisite  // Nous ciblons la visite spécifique
+        ]);}
+
     if (count($updateFields) > 0) {
         $sql = "UPDATE visite SET " . implode(', ', $updateFields) . " WHERE idVisite = $idVisite";
     
