@@ -32,9 +32,10 @@
                     $query->execute();
 
                     // Récupérer les descriptions de soins et leurs ID depuis la table `soins`
-                    $soinquery = "SELECT idInamiTypeSoin, descriptionTypeSoin FROM soins";
+                    $soinquery = "SELECT ts.idInamiTypeSoins, ts.descriptionTypeSoins FROM typeSoins ts";
+                    
                     $stmt = $db->query($soinquery);
-                    $soins = $stmt->fetchAll(PDO::FETCH_ASSOC); // On stocke les résultats dans un tableau associatif
+                    $typeSoins = $stmt->fetchAll(PDO::FETCH_ASSOC); // On stocke les résultats dans un tableau associatif
 
 
                     // Récupère les visites sans rapport associé
@@ -70,15 +71,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="typeSoin">Description type de soin</label>
-                    <select class="form-control" id="typeSoin" name="idInamiTypeSoin" required>
+                    <label for="typeSoins">Description type de soin</label>
+                    <select class="form-control" id="typeSoins" name="idInamiTypeSoins" required>
                     <option value="">-- Sélectionnez un soin --</option>
                         <?php
-                            foreach ($soins as $soin) {
-                            echo '<option value="' . $soin['idInamiTypeSoin'] . '">' . htmlspecialchars($soin['descriptionTypeSoin']) . '</option>';
+                            foreach ($typeSoins as $soin) {
+                            echo '<option value="' . $soin['idInamiTypeSoins'] . '">' . htmlspecialchars($soin['descriptionTypeSoins']) . '</option>';
                             }
                         ?>
-                        </select>
+                    </select>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Ajouter la visite</button>
