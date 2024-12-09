@@ -48,10 +48,36 @@
                     <label for="numeroInami">Numéro Inami du médecin traitant (optionnel)</label>
                     <input type="text" class="form-control" id="numeroInami" name="numeroInami" placeholder="Numéro Inami">
                 </div>
+            
                 <div class="form-group">
                     <label for="idAssurabilite">Numéro Assurabilite</label>
-                    <input type="text" class="form-control" id="idAssurabilite" name="idAssurabilite" placeholder="Numéro Assurabilite">
+                    <select class="form-control" id="idAssurabilite" name="idAssurabilite" required>
+                    <option value="">-- Sélectionnez une assurabilité --</option>
+                        <?php
+                        try{
+                            $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
+                            $base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                            $sql = "SELECT idAssurabilite, organismeAssureur, typeAssurabilite FROM assurabilité";
+                            $stmt = $base->query($sql);
+
+                            // Récupération des données dans un tableau associatif
+                            $assurabilite = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                            foreach ($assurabilite as $assur) {
+                            echo '<option value="' . htmlspecialchars($assur['idAssurabilite'])  . '">' 
+                            . htmlspecialchars($assur['organismeAssureur']) 
+                            . ' - '
+                            . htmlspecialchars($assur['typeAssurabilite']) 
+                            . '</option>';
+                            }
+                        } catch (PDOException $e) {
+                            echo "Erreur : " . $e->getMessage();
+                        }
+                        ?>
+                    </select>
                 </div>
+
                 <button type="submit" class="btn btn-primary btn-block">Ajouter le Patient</button>
             </form>
         </div>
