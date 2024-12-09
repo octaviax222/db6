@@ -71,7 +71,7 @@ try {
     if ($Resultat) {
         $idVisite = $base->lastInsertId(); // Récupère l'ID de la visite générée automatiquement
         echo "Numéro de la visite (généré automatiquement) : " . $idVisite;
-        if ($idInamiTypeSoin ==425110) {
+        if ($idInamiTypeSoins == 425110) {
         
             // Si le type de soin est "toilette", redirige vers la page Katz
             header("Location: page.echelle.katz.html");

@@ -24,40 +24,49 @@ try {
     // Concaténer les différentes valeurs
     $concatener = $se_laver . $s_habiller . $transfert . $toilette . $continence . $manger;
 
-    // Préparer la requête SQL
-    $sql = "INSERT INTO toilette (scoreKatz) VALUES (:concatener)";
-    $stmt = $base->prepare($sql);
-    // Exécuter la requête
-    $stmt->bindParam(':concatener' , $concatener);
+    // Récupérer l'ID de la dernière ligne insérée dans la table soins
+    $sqlGetLastSoins = "SELECT idSoins FROM soins ORDER BY idSoins DESC LIMIT 1";
+    $stmtGetLastSoins = $base->query($sqlGetLastSoins);
+    $lastSoins = $stmtGetLastSoins->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->execute()) {
-        // Récupérer le dernier ID inséré dans la table toilette
-        $idToilette = $base->lastInsertId();
-        echo "Toilette ajoutée avec succès, ID : $idToilette<br>";
+    if ($lastSoins) {
+        $idSoins = $lastSoins['idSoins']; // Dernier ID de la table soins
+        echo "Dernier soin trouvé, ID : $idSoins<br>";
 
-        // Insérer dans la table soins avec l'ID de toilette
-        $descriptionTypeSoin = "Soins d'hygiène (toilettes)";
-        $sqlSoins = "INSERT INTO soins (idInamiTypeSoin,descriptionTypeSoin,idToilette,idFacturation) VALUES (:idInamiTypeSoin,:descriptionTypeSoin,:idToilette,:idFacturation)";
-        $stmtSoins = $base->prepare($sqlSoins);
-        $idInamiTypeSoin = '425110';
-        $idfacturation=1;
-        $stmtSoins->bindParam(':idInamiTypeSoin', $idInamiTypeSoin );
-        $stmtSoins->bindParam(':descriptionTypeSoin', $descriptionTypeSoin);
-        $stmtSoins->bindParam(':idToilette', $idToilette);
-        $stmtSoins->bindParam(':idFacturation',$idfacturation);
+        // Insérer dans la table toilette
+        $sqlToilette = "INSERT INTO toilette (scoreKatz) VALUES (:concatener)";
+        $stmtToilette = $base->prepare($sqlToilette);
+        $stmtToilette->bindParam(':concatener', $concatener);
 
-        if ($stmtSoins->execute()) {
-            echo "Soin ajouté avec succès pour la toilette.<br>";
-            echo "<script>
-                alert('Données ajoutées avec succès !');
-                window.location.href = 'home.visite.html'; // Redirige vers la page spécifique
-              </script>";
+        if ($stmtToilette->execute()) {
+            // Récupérer le dernier ID inséré dans la table toilette
+            $idToilette = $base->lastInsertId();
+            echo "Toilette ajoutée avec succès, ID : $idToilette<br>";
+
+            // Mettre à jour la table soins avec l'ID toilette
+            $sqlUpdateSoins = "UPDATE soins SET idToilette = :idToilette WHERE idSoins = :idSoins";
+            $stmtUpdateSoins = $base->prepare($sqlUpdateSoins);
+            $stmtUpdateSoins->bindParam(':idToilette', $idToilette);
+            $stmtUpdateSoins->bindParam(':idSoins', $idSoins);
+
+            if ($stmtUpdateSoins->execute()) {
+                echo "Mise à jour réussie : ID toilette associé au soin.<br>";
+                echo "<script>
+                    alert('Données mises à jour avec succès !');
+                    window.location.href = 'home.visite.html'; // Redirige vers la page spécifique
+                  </script>";
+            } else {
+                echo "Erreur lors de la mise à jour de la table soins.<br>";
+            }
         } else {
-            echo "Erreur lors de l'ajout dans la table soins.<br>";
+            echo "Erreur lors de l'insertion dans la table toilette.<br>";
         }
     } else {
-        echo "Erreur lors de l'ajout dans la table toilette.<br>";
+        echo "Aucune ligne trouvée dans la table soins pour mise à jour.<br>";
     }
+
+        
+        
 }
 catch (PDOException $e) {
     echo "Erreur : " . $e->getMessage();
