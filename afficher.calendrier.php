@@ -20,7 +20,7 @@ $query = $base->prepare("
     SELECT 
         v.IdVisite, v.DateR, v.Heure, v.Description,
         p.nom AS nom, p.prenom AS prenom, p.rue, p.numeroDomicile, p.ville,
-        r.idInamiTypeSoin
+        r.idSoins
     FROM visite v
     JOIN encode e ON v.IdVisite = e.idVisite
     JOIN patient p ON e.numeroNISS = p.numeroNISS
