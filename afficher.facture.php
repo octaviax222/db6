@@ -7,17 +7,36 @@ $numeroInami = $_SESSION['numeroInami'];
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
     // Préparer la requête SQL
-    $sql = "
+    $sql =("
         SELECT  
             prestataire.numeroInami AS prestataireNumeroInami,
             prestataire.nom AS prestataireNom,
             prestataire.prenom AS prestatairePrenom,
+
             patient.numeroNiss AS patientNumeroNiss,
             patient.nom AS patientNom,
             patient.prenom AS patientPrenom,
+            patient.numeroInami AS patientNumeroInami,
+            patient.idAssurabilite AS patientIdAssurabilite,
+
+            encode.numeroNiss AS encodeNumeroNiss,
+            encode.idVisite AS encodeIdVisite,
+            encode.numeroInami AS encodeNumeroInami,
+                    
             visite.dateR AS visiteDateR,
-            soins.descriptionTypeSoin AS soinsDescriptionTypeSoin,
-            soins.idInamiTypeSoin AS soinsIdInamiTypeSoin,
+            visite.idVisite AS visiteIdVisite,
+
+            realise.idSoins AS realiseIdsoins,
+            realise.idVisite as realiseIdVisite,
+                    
+            soins.idSoins AS soinsIdSoins,
+            soins.idFacturation AS soinsIdFacturation,
+
+            toilette.idToilette AS toiletteIdToilette,
+            toilette.forfait AS toiletteForfait,
+
+            typeSoins.idInamiTypeSoins AS typeSoinsIdInamiTypeSoins,
+                    
             facturation.idFacturation AS facturationIdFacturation
         FROM  
             encode
@@ -25,12 +44,14 @@ try {
         JOIN patient ON encode.numeroNiss = patient.numeroNiss
         JOIN visite ON encode.idVisite = visite.idVisite
         JOIN realise ON visite.idVisite = realise.idVisite
-        JOIN soins ON realise.idInamiTypeSoin = soins.idInamiTypeSoin
+        JOIN soins ON realise.idSoins = soins.idSoins
+        JOIN typeSoins ON soins.idInamiTypeSoins = typeSoins.idInamiTypeSoins
         JOIN facturation ON soins.idFacturation = facturation.idFacturation
+        
         WHERE 
             encode.numeroInami = :numeroInami AND
             visite.dateR BETWEEN :dateDebut AND :dateFin;
-    ";
+    ");
 
     // Vérifier si le formulaire a été soumis
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -74,6 +95,7 @@ try {
         $pdf->Cell(30, 10, 'Prenom Prestataire', 1);
         $pdf->Cell(40, 10, 'Numero NISS Patient', 1);
         $pdf->Cell(30, 10, 'Numero INAMI Soin', 1);
+        $pdf->Cell(30, 10, 'Forfait', 1);
         $pdf->Ln();
 
         // Remplir les données
@@ -82,7 +104,8 @@ try {
             $pdf->Cell(30, 10, $ligne['prestataireNom'], 1);
             $pdf->Cell(30, 10, $ligne['prestatairePrenom'], 1);
             $pdf->Cell(40, 10, $ligne['patientNumeroNiss'], 1);
-            $pdf->Cell(30, 10, $ligne['soinsIdInamiTypeSoin'], 1);
+            $pdf->Cell(40, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1);
+            $pdf->Cell(30, 10, $ligne['toiletteForfait'], 1);
             $pdf->Ln();
         }
 
@@ -151,9 +174,8 @@ try {
                     <th>Nom du patient</th>
                     <th>Prenom du patient</th>
                     <th>Date de la visite du patient</th>
-                    <th>Numero INAMI du soin effectué</th>
-                    <th>Description du soin effectué</th>
-                    <th>Actions</th>
+                    <th>Numero INAMI du soin</th>
+                    <th>Forfait du patient</th>
                 </tr>
             </thead>
             <tbody>
@@ -168,8 +190,8 @@ try {
                             <td><?= htmlspecialchars($ligne['patientNom']) ?></td>
                             <td><?= htmlspecialchars($ligne['patientPrenom']) ?></td>
                             <td><?= htmlspecialchars($ligne['visiteDateR']) ?></td>
-                            <td><?= htmlspecialchars($ligne['soinsIdInamiTypeSoin']) ?></td>
-                            <td><?= htmlspecialchars($ligne['soinsDescriptionTypeSoin']) ?></td>
+                            <td><?= htmlspecialchars($ligne['typeSoinsIdInamiTypeSoins']) ?></td>
+                            <td><?= htmlspecialchars($ligne['toiletteForfait']) ?></td>
                             <td><a href="supprimer.facture.php?chkid=<?= $ligne['facturationIdFacturation'] ?>" class="btn btn-danger btn-sm">Supprimer</a></td>
                         </tr>
                     <?php endforeach; ?>

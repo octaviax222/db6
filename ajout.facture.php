@@ -16,47 +16,54 @@ try {
         // Vérifier si les dates sont valides
         if (!empty($dateDebut) && !empty($dateFin)) {
             // Requête SQL avec BETWEEN
-            $query = $base->prepare("
-                SELECT 
-                    prestataire.numeroInami AS prestataireNumeroInami,
-                    prestataire.nom AS prestataireNom,
-                    prestataire.prenom AS prestatairePrenom,
+            $query = $base->prepare(" 
+            SELECT 
+            prestataire.numeroInami AS prestataireNumeroInami,
+            prestataire.nom AS prestataireNom,
+            prestataire.prenom AS prestatairePrenom,
 
-                    patient.numeroNiss AS patientNumeroNiss,
-                    patient.nom AS patientNom,
-                    patient.prenom AS patientPrenom,
-                    patient.numeroInami AS patientNumeroInami,
-                    patient.idAssurabilite AS patientIdAssurabilite,
+            patient.numeroNiss AS patientNumeroNiss,
+            patient.nom AS patientNom,
+            patient.prenom AS patientPrenom,
+            patient.numeroInami AS patientNumeroInami,
+            patient.idAssurabilite AS patientIdAssurabilite,
 
-                    encode.numeroNiss AS encodeNumeroNiss,
-                    encode.idVisite AS encodeIdVisite,
-                    encode.numeroInami AS encodeNumeroInami,
-                    
-                    visite.dateR AS visiteDateR,
-                    visite.idVisite AS visiteIdVisite,
+            encode.numeroNiss AS encodeNumeroNiss,
+            encode.idVisite AS encodeIdVisite,
+            encode.numeroInami AS encodeNumeroInami,
+            
+            visite.dateR AS visiteDateR,
+            visite.idVisite AS visiteIdVisite,
 
-                    realise.idInamiTypeSoin AS realiseIdInamiTypeSoin,
-                    realise.idVisite as realiseIdVisite,
-                    
-                    soins.idInamiTypeSoin AS soinsIdInamiTypeSoin,
-                    soins.idFacturation AS soinsIdFacturation,
-                    soins.descriptionTypeSoin AS soinsDescriptionTypeSoin,
+            realise.idSoins AS realiseIdsoins,
+            realise.idVisite as realiseIdVisite,
+            
+            soins.idSoins AS soinsIdSoins,
+            soins.idFacturation AS soinsIdFacturation,
 
-                    facturation.idFacturation AS facturationIdFacturation
+            toilette.idToilette AS toiletteIdToilette,
+            toilette.forfait AS toiletteForfait,
 
-                FROM  
-                    encode
-                JOIN prestataire ON encode.numeroInami = prestataire.numeroInami
-                JOIN patient ON encode.numeroNiss = patient.numeroNiss
-                JOIN visite ON encode.idVisite = visite.idVisite
-                JOIN realise ON visite.idVisite = realise.idVisite
-                JOIN soins ON realise.idInamiTypeSoin = soins.idInamiTypeSoin
-                JOIN facturation ON soins.idFacturation = facturation.idFacturation
+            typeSoins.idInamiTypeSoins AS typeSoinsIdInamiTypeSoins,
+            
+            facturation.idFacturation AS facturationIdFacturation
 
-                WHERE 
-                    encode.numeroInami = :numeroInami AND
-                    visite.dateR BETWEEN :dateDebut AND :dateFin;
+            FROM  
+                encode
+            JOIN prestataire ON encode.numeroInami = prestataire.numeroInami
+            JOIN patient ON encode.numeroNiss = patient.numeroNiss
+            JOIN visite ON encode.idVisite = visite.idVisite
+            JOIN realise ON visite.idVisite = realise.idVisite
+            JOIN soins ON realise.idSoins = soins.idSoins
+            JOIN typeSoins ON soins.idInamiTypeSoins = typeSoins.idInamiTypeSoins
+            JOIN toilette ON soins.idToilette = toilette.idToilette
+            JOIN facturation ON soins.idFacturation = facturation.idFacturation
+
+            WHERE 
+                encode.numeroInami = :numeroInami AND
+                visite.dateR BETWEEN :dateDebut AND :dateFin;
             ");
+                
 
             // Exécution de la requête
             $query->execute([
@@ -82,8 +89,8 @@ try {
                         <th>Nom du patient</th>
                         <th>Prenom du patient</th>
                         <th>Date de la visite du patient</th>
-                        <th>Numero du soin effectué</th>
-                        <th>Description du soin effectué</th>
+                        <th>INAMI du soin </th>
+                        <th>Forfait du patient</th>
                     </tr></thead>";
             echo "<tbody>";
             foreach ($resultats as $resultat) {
@@ -94,13 +101,14 @@ try {
                         <td>{$resultat['patientNom']}</td>
                         <td>{$resultat['patientPrenom']}</td>
                         <td>{$resultat['visiteDateR']}</td>
-                        <td>{$resultat['soinsIdInamiTypeSoin']}</td>
-                        <td>{$resultat['soinsDescriptionTypeSoin']}</td>
+                        <td>{$resultat['typeSoinsIdInamiTypeSoins']}</td>
+                        <td>{$resultat['toiletteForfait']}</td>
                       </tr>";
             }
             echo "</tbody>";
             echo "</table>";
             echo "Numéro de la facturation généré : " . $idFacturation;
+            header("Location:home.visite.html");
         } else {
             echo "Veuillez sélectionner une période valide.";
         }
