@@ -12,7 +12,6 @@ if (isset($_POST['numeroFacture'])) {
     echo "Erreur : Numéro de facture non spécifié.";
     exit;
 }
-
 echo "Numéro de la facture : " . $supp . "<br>";
 echo "Numéro INAMI : " . $numeroInami . "<br>";
 
