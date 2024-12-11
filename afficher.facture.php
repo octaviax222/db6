@@ -12,13 +12,33 @@ try {
             prestataire.numeroInami AS prestataireNumeroInami,
             prestataire.nom AS prestataireNom,
             prestataire.prenom AS prestatairePrenom,
+
             patient.numeroNiss AS patientNumeroNiss,
             patient.nom AS patientNom,
             patient.prenom AS patientPrenom,
+            patient.numeroInami AS patientNumeroInami,
+            patient.idAssurabilite AS patientIdAssurabilite,
+
+            encode.numeroNiss AS encodeNumeroNiss,
+            encode.idVisite AS encodeIdVisite,
+            encode.numeroInami AS encodeNumeroInami,
+                    
             visite.dateR AS visiteDateR,
+            visite.idVisite AS visiteIdVisite,
+
+            realise.idSoins AS realiseIdsoins,
+            realise.idVisite as realiseIdVisite,
+                    
+            soins.idSoins AS soinsIdSoins,
+            soins.idFacturation AS soinsIdFacturation,
             soins.descriptionTypeSoin AS soinsDescriptionTypeSoin,
-            soins.idInamiTypeSoin AS soinsIdInamiTypeSoin,
-            facturation.idFacturation AS facturationIdFacturation
+
+                    toilette.idToilette AS toiletteIdToilette
+                    toilette.forfait AS toiletteForfait
+
+                    typeSoins.idInamiTypeSoins AS typeSoinsIdInamiTypeSoins
+                    
+                    facturation.idFacturation AS facturationIdFacturation
         FROM  
             encode
         JOIN prestataire ON encode.numeroInami = prestataire.numeroInami
