@@ -1,4 +1,8 @@
 <?php
+
+session_start();
+$numeroInamiInfirmiere = $_SESSION['numeroInami'];
+
 $numeroNISS = $_POST['numeroNISS'];
 $nom = $_POST['nom'];
 $prenom = $_POST['prenom'];
@@ -31,6 +35,20 @@ echo "<br>";
 
 $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6','user6', 'user6');
 echo"Connexion réussie à la base de données<br>";
+
+// Vérification si le numéro NISS existe déjà dans la base de données
+$sqlCheck = "SELECT COUNT(*) FROM patient WHERE numeroNiss = :numeroNiss";
+$stmtCheck = $base->prepare($sqlCheck);
+$stmtCheck->bindParam(':numeroNiss', $numeroNISS, PDO::PARAM_INT);
+$stmtCheck->execute();
+$count = $stmtCheck->fetchColumn();
+
+// Si le numéro NISS existe déjà, afficher un message d'erreur et arrêter le script
+if ($count > 0) {
+    echo "<script>alert('Erreur : Le patient avec le numéro NISS $numeroNISS existe déjà.');</script>";
+    header("Location:home.patient.html");
+	exit();
+}
 
 $sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue,
 numeroDomicile, ville, sexe, numeroInami, idAssurabilite) VALUES ($numeroNISS,

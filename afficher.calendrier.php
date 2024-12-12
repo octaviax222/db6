@@ -20,11 +20,14 @@ $query = $base->prepare("
     SELECT 
         v.IdVisite, v.DateR, v.Heure, v.Description,
         p.nom AS nom, p.prenom AS prenom, p.rue, p.numeroDomicile, p.ville,
-        r.idSoins
+        ts.idInamiTypeSoins AS idInamiTypeSoins,
+        ts.descriptionTypeSoins AS descriptionTypeSoins
     FROM visite v
     JOIN encode e ON v.IdVisite = e.idVisite
     JOIN patient p ON e.numeroNISS = p.numeroNISS
     LEFT JOIN realise r ON v.IdVisite = r.idVisite  -- Jointure avec la table 'Realise'
+    LEFT JOIN soins s ON r.idSoins = s.idSoins -- Jointure avec la table soin
+    LEFT JOIN typeSoins ts ON s.idInamiTypeSoins = ts.idInamiTypeSoins
     WHERE MONTH(v.DateR) = :mois AND YEAR(v.DateR) = :annee
     AND e.numeroInami = :numeroInami
 ");
@@ -186,8 +189,8 @@ $anneeSuivante = $mois == 12 ? $annee + 1 : $annee;
                     echo "<p><strong>Description :  </strong>" . htmlspecialchars($visite['Description']) . "</p>";
 
                     // Afficher les soins associés
-                    if (!empty($visite['idInamiTypeSoin'])) {
-                        echo "<p><strong>Soin : </strong>" . htmlspecialchars($visite['idInamiTypeSoin']) . "</p>";
+                    if (!empty($visite['descriptionTypeSoins'])) {
+                        echo "<p><strong>Soin : </strong>" . htmlspecialchars($visite['descriptionTypeSoins']) . "</p>";
                     }
 
                     echo "</div>";

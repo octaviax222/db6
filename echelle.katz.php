@@ -24,6 +24,20 @@ try {
     // Concaténer les différentes valeurs
     $concatener = $se_laver . $s_habiller . $transfert . $toilette . $continence . $manger;
 
+     // Calcul de la moyenne des chiffres
+     $valeurs = [$se_laver, $s_habiller, $transfert, $toilette, $continence, $manger];
+     $somme = array_sum($valeurs);
+     $moyenne = $somme / count($valeurs);
+ 
+     // Déterminer le forfait en fonction de la moyenne
+     if($moyenne <= 2){
+         $forfait = "Forfait A";
+     } elseif ($moyenne <= 4) {
+         $forfait = "Forfait B";
+     } else {
+         $forfait = "Forfait C";
+     }
+ 
     // Récupérer l'ID de la dernière ligne insérée dans la table soins
     $sqlGetLastSoins = "SELECT idSoins FROM soins ORDER BY idSoins DESC LIMIT 1";
     $stmtGetLastSoins = $base->query($sqlGetLastSoins);
@@ -34,9 +48,10 @@ try {
         echo "Dernier soin trouvé, ID : $idSoins<br>";
 
         // Insérer dans la table toilette
-        $sqlToilette = "INSERT INTO toilette (scoreKatz) VALUES (:concatener)";
+        $sqlToilette = "INSERT INTO toilette (scoreKatz,forfait) VALUES (:concatener,:forfait)";
         $stmtToilette = $base->prepare($sqlToilette);
         $stmtToilette->bindParam(':concatener', $concatener);
+        $stmtToilette->bindParam(':forfait', $forfait);
 
         if ($stmtToilette->execute()) {
             // Récupérer le dernier ID inséré dans la table toilette

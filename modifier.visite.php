@@ -1,4 +1,8 @@
 <?php
+
+session_start();
+$numeroInami = $_SESSION['numeroInami'];
+
 try {
 
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
@@ -11,56 +15,84 @@ try {
     $heure = $_POST['heure'];
     $idInamiTypeSoins = $_POST['idInamiTypeSoins'];
 
-    $updateFields = [];
+    $sql = "SELECT v.*
+    FROM visite v
+    JOIN encode e ON v.idVisite = e.idVisite
+    WHERE e.numeroInami = :numeroInami AND e.idVisite = :idVisite";
 
-    if (!empty($idVisite)) {
-        $updateFields[] = "idVisite = '$idVisite'";
-    }
-    if (!empty($date_visite)) {
-        $updateFields[] = "dateR = '$date_visite'";
-    }
-    if (!empty($frequence)) {
-        $updateFields[] = "frequence = '$frequence'";
-    }
-    if (!empty($description)) {
-        $updateFields[] = "description = '$description'";
-    }
-    if (!empty($heure)) {
-        $updateFields[] = "heure = '$heure'";
-    }
-    if (!empty($idInamiTypeSoins)) {
-        // Jointure entre la table visite et soins pour mettre à jour idInamiTypeSoins dans la table soins
-        $sqlSoin = "
-            UPDATE soins s
-            INNER JOIN realise r ON r.idSoins = s.idSoins  -- Jointure avec la table realise sur idSoins
-            INNER JOIN visite v ON v.idVisite = r.idVisite  -- Jointure avec la table visite sur idVisite
-            SET s.idInamiTypeSoins = :idInamiTypeSoins
-            WHERE v.idVisite = :idVisite
-        ";
+    $stmt = $base->prepare($sql);
+    $stmt->bindParam(":numeroInami", $numeroInami);
+    $stmt->bindParam(":idVisite", $idVisite);
+    $stmt->execute();
 
-        // Préparation de la requête
-        $stmtSoin = $base->prepare($sqlSoin);
+    if ($stmt->rowCount() > 0) {
+        $updateFields = [];
+        $params = [':idVisite' => $idVisite];
 
-        // Exécution de la requête de mise à jour
-        $stmtSoin->execute([
-            ':idInamiTypeSoins' => $idInamiTypeSoins,
-            ':idVisite' => $idVisite  // Nous ciblons la visite spécifique
-        ]);}
+        if (!empty($date_visite)) {
+            $updateFields[] = "dateR = :dateR";
+            $params[':dateR'] = $date_visite;
+        }
+        if (!empty($frequence)) {
+            $updateFields[] = "frequence = :frequence";
+            $params[':frequence'] = $frequence;
+        }
+        if (!empty($description)) {
+            $updateFields[] = "description = :description";
+            $params[':description'] = $description;
+        }
+        if (!empty($heure)) {
+            $updateFields[] = "heure = :heure";
+            $params[':heure'] = $heure;
+        }
+        if (!empty($idInamiTypeSoins)) {
+            // Jointure entre la table visite et soins pour mettre à jour idInamiTypeSoins dans la table soins
+            $sqlSoin = "
+                UPDATE soins s
+                INNER JOIN realise r ON r.idSoins = s.idSoins  -- Jointure avec la table realise sur idSoins
+                INNER JOIN visite v ON v.idVisite = r.idVisite  -- Jointure avec la table visite sur idVisite
+                SET s.idInamiTypeSoins = :idInamiTypeSoins
+                WHERE v.idVisite = :idVisite
+            ";
 
-    if (count($updateFields) > 0) {
-        $sql = "UPDATE visite SET " . implode(', ', $updateFields) . " WHERE idVisite = $idVisite";
-    
-        echo $sql;
-        $base->exec($sql);
+            // Préparation de la requête
+            $stmtSoin = $base->prepare($sqlSoin);
+
+            // Exécution de la requête de mise à jour
+            $stmtSoin->execute([
+                ':idInamiTypeSoins' => $idInamiTypeSoins,
+                ':idVisite' => $idVisite  // Nous ciblons la visite spécifique
+            ]);}
+
+        if ($idInamiTypeSoins == 425110) {
+        
+            // Si le type de soin est "toilette", redirige vers la page Katz
+            header("Location: page.echelle.katz.html");
+            exit;
+        }
+
+        if (count($updateFields) > 0) {
+            $sqlUpdate = "UPDATE visite SET " . implode(', ', $updateFields) . " WHERE idVisite = :idVisite";
+            $stmtUpdate = $base->prepare($sqlUpdate);
+            $stmtUpdate->execute($params);
+            echo "<h3>La visite numéro $idVisite a été modifiée avec succès.</h3>";
+            header("Location:home.visite.html");
+            exit;
+           
+        } else {
+            echo "Aucune donnée à mettre à jour.";
+            header("Location:home.visite.html");
+            exit;
+        }
 
     } else {
-        echo "Aucune donnée à mettre à jour.";
+        // Affichage d'une alerte en cas d'erreur
+        echo "<script>
+            alert('Erreur : Cette visite ne vous appartient pas ou n\'existe pas.');
+            window.location.href = 'home.visite.html';
+        </script>";
         exit;
     }
-
-    $base->exec($sql);
-
-    echo "<h3>La visite numéro $idVisite a été modifiée avec succès.</h3>";
 } catch (Exception $e) {
    
     die('Erreur : ' . $e->getMessage());

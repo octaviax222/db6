@@ -33,7 +33,7 @@
 
                 <div class="form-group">
                     <label for="typeSoins">Description type de soin</label>
-                    <select class="form-control" id="typeSoins" name="idInamiTypeSoins" required>
+                    <select class="form-control" id="typeSoins" name="idInamiTypeSoins">
                     <option value="">-- Sélectionnez un soin --</option>
                         <?php
 

@@ -34,11 +34,12 @@ if ($user) {
         // Démarrer une session pour l'utilisateur
         session_start();
         $_SESSION['numeroInami'] = $user['numeroInami'];
+        $_SESSION['prenom'] = $user['prenom']; // Ajoutez ceci pour stocker le prénom
         $_SESSION['loggedin'] = true;
 		
 		
         // Rediriger vers la page d'accueil ou un tableau de bord
-		header("Location: home.html");
+		header("Location: home.php");
 		exit();
         
     } else {
