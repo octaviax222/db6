@@ -95,7 +95,7 @@ foreach ($facturations as $ligne) {
     $pdf->Cell(30, 10, $ligne['prestataireNom'], 1);
     $pdf->Cell(30, 10, $ligne['prestatairePrenom'], 1);
     $pdf->Cell(40, 10, $ligne['patientNumeroNiss'], 1);
-    $pdf->Cell(40, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1);
+    $pdf->Cell(30, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1);
     $pdf->Cell(20, 10, $ligne['toiletteForfait'], 1);
     $pdf->Ln();
 }

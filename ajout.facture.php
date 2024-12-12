@@ -25,7 +25,6 @@ try {
                    patient.numeroNiss AS patientNumeroNiss,
                    patient.nom AS patientNom,
                    patient.prenom AS patientPrenom,
-                   patient.numeroInami AS patientNumeroInami,
                    patient.idAssurabilite AS patientIdAssurabilite,
 
                    encode.numeroNiss AS encodeNumeroNiss,
@@ -133,7 +132,8 @@ try {
            }
            echo "</tbody>";
            echo "</table>";
-           echo "Numéro de la facturation générée : " . $idFacturation;
+           echo " Numéro de la facturation générée : " . $idFacturation ;
+           echo "<br> Facturation créée !</br>";
        } else {
            echo "Veuillez sélectionner une période valide.";
        }
