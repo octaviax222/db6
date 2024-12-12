@@ -11,7 +11,7 @@ $rue = $_POST['rue'];
 $numeroDomicile = $_POST['numeroDomicile'];
 $ville = $_POST['ville'];
 $sexe = $_POST['sexe'];
-$numeroInami = empty($_POST['numeroInami']) ? null : $_POST['numeroInami'];
+$numeroInamiMedecin = empty($_POST['numeroInamiMedecin']) ? null : $_POST['numeroInamiMedecin'];
 $numeroAssu=$_POST['idAssurabilite'];
 
 echo "Numéro NISS : ".$numeroNISS;
@@ -30,7 +30,7 @@ echo "Ville : ".$ville;
 echo "<br>";
 echo "Sexe : ".$sexe;
 echo "<br>";
-echo "Numéro Inami du médecin traitant (optionnel) : ".$numeroInami;
+echo "Numéro Inami du médecin traitant (optionnel) : ".$numeroInamiMedecin;
 echo "<br>";
 
 $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6','user6', 'user6');
@@ -53,7 +53,7 @@ if ($count > 0) {
 $sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue,
 numeroDomicile, ville, sexe, numeroInami, idAssurabilite) VALUES ($numeroNISS,
 '$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe'," . 
-        (isset($numeroInami) ? $numeroInami : "NULL") . ",'$numeroAssu')";
+        (isset($numeroInamiMedecin) ? $numeroInamiMedecin : "NULL") . ",'$numeroAssu')";
 
 echo $sql;
 $Resultat = $base->exec($sql);

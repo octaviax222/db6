@@ -50,11 +50,11 @@
                 </div>
                 <div class="form-group">
                     <label for="numeroInami">Numéro Inami du médecin traitant (optionnel)</label>
-                    <input type="text" class="form-control" id="numeroInami" name="numeroInami" placeholder="Numéro Inami">
+                    <input type="text" class="form-control" id="numeroInamiMedecin" name="numeroInamiMedecin" placeholder="Numéro Inami">
                 </div>
                 <div class="form-group">
                     <label for="idAssurabilite">Numéro Assurabilite</label>
-                    <select class="form-control" id="idAssurabilite" name="idAssurabilite" required>
+                    <select class="form-control" id="idAssurabilite" name="idAssurabilite">
                     <option value="">-- Sélectionnez une assurabilité --</option>
                         <?php
                         try{

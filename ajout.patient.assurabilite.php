@@ -46,7 +46,7 @@
                 </div>
                 <div class="form-group">
                     <label for="numeroInami">Numéro Inami du médecin traitant (optionnel)</label>
-                    <input type="text" class="form-control" id="numeroInami" name="numeroInami" placeholder="Numéro Inami">
+                    <input type="text" class="form-control" id="numeroInamiMedecin" name="numeroInamiMedecin" placeholder="Numéro Inami">
                 </div>
             
                 <div class="form-group">

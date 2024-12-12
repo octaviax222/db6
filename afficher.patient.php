@@ -1,5 +1,7 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
+session_start();
+$numeroInami = $_SESSION['numeroInami'];
 
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
@@ -12,7 +14,7 @@ try {
             p.numeroDomicile, 
             p.ville, 
             p.sexe, 
-            p.numeroInami, 
+            p.numeroInamiMedecin, 
             a.organismeAssureur, 
             a.typeAssurabilite
         FROM 
@@ -20,11 +22,17 @@ try {
         LEFT JOIN 
             assurabilité a 
         ON 
-            p.idAssurabilite = a.idAssurabilite";
+            p.idAssurabilite = a.idAssurabilite
 
-    $resultat = $base->query($sql);
+        JOIN encode e ON p.numeroNiss = e.numeroNiss 
+        WHERE e.numeroInami = :numeroInami";
+
+
+    $stmt = $base->prepare($sql);
+    $stmt->bindParam(':numeroInami', $numeroInami, PDO::PARAM_STR);
+    $stmt->execute();
     
-    while ($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
+    while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $niss = htmlspecialchars($ligne['numeroNiss']);
         $nom = htmlspecialchars($ligne['nom']);
         $prenom = htmlspecialchars($ligne['prenom']);
@@ -33,7 +41,7 @@ try {
         $num = htmlspecialchars($ligne['numeroDomicile']);
         $ville = htmlspecialchars($ligne['ville']);
         $sexe = htmlspecialchars($ligne['sexe']);
-        $inami = isset($ligne['numeroInami']) ? htmlspecialchars($ligne['numeroInami']) : "";
+        $inami = isset($ligne['numeroInamiMedecin']) ? htmlspecialchars($ligne['numeroInamiMedecin']) : "";
         $assureur = htmlspecialchars($ligne['organismeAssureur']);
         $typeAssurabilite = htmlspecialchars($ligne['typeAssurabilite']);
 
