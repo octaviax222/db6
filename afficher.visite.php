@@ -7,8 +7,8 @@ $numeroInami = $_SESSION['numeroInami'];
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
 
-    $sql = "SELECT v.*, patient.nom AS patientNom, patient.prenom AS patientPrenom
-    FROM visite v
+    $sql = "SELECT v.*, p.nom AS patientNom, p.prenom AS patientPrenom
+    FROM visite v 
     JOIN encode e ON v.IdVisite = e.idVisite
     JOIN patient p ON e.numeroNISS = p.numeroNISS
     LEFT JOIN realise r ON v.IdVisite = r.idVisite  -- Jointure avec la table 'Realise'
