@@ -1,5 +1,6 @@
 <?php
 session_start();
+$numeroInami = $_SESSION['numeroInami']; // l'inamie de l'infirmière 
 // Vérification que l'infirmière est connectée
 if (!isset($_SESSION['numeroInami'])) {
     echo "Accès refusé. Veuillez vous connecter.";
@@ -14,13 +15,9 @@ $rue = $_POST['rue'];
 $numeroDomicile = $_POST['numeroDomicile'];
 $ville = $_POST['ville'];
 $sexe = $_POST['sexe'];
-<<<<<<< HEAD
 $numeroInamiMedecin = empty($_POST['numeroInamiMedecin']) ? null : $_POST['numeroInamiMedecin'];
-=======
-$numeroInami = $_POST['numeroInami'];
->>>>>>> 2123a1e4d803b08ae6ef875ed161adc271d67b96
 $numeroAssu=$_POST['idAssurabilite'];
-$numeroInami_inf=$_SESSION['numeroInami']; // l'inamie de l'infirmière 
+
 /*
 echo "Numéro NISS : ".$numeroNISS;
 echo "<br>";
@@ -42,31 +39,42 @@ echo "<br>";
 */
 $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6','user6', 'user6');
 echo"Connexion réussie à la base de données<br>";
-$sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue,
-numeroDomicile, ville, sexe, numeroInami, idAssurabilite) VALUES ($numeroNISS,
-<<<<<<< HEAD
-'$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe'," . 
-        (isset($numeroInamiMedecin) ? $numeroInamiMedecin : "NULL") . ",'$numeroAssu')";
 
-=======
+
+// Vérification si le numéro NISS existe déjà dans la base de données
+$sqlCheck = "SELECT COUNT(*) FROM patient WHERE numeroNiss = :numeroNiss";
+$stmtCheck = $base->prepare($sqlCheck);
+$stmtCheck->bindParam(':numeroNiss', $numeroNISS, PDO::PARAM_INT);
+$stmtCheck->execute();
+$count = $stmtCheck->fetchColumn();
+
+// Si le numéro NISS existe déjà, afficher un message d'erreur et arrêter le script
+if ($count > 0) {
+    echo "<script>alert('Erreur : Le patient avec le numéro NISS $numeroNISS existe déjà.');</script>";
+    header("Location:home.patient.html");
+	exit();
+}
+
+$sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue,
+numeroDomicile, ville, sexe, numeroInamiMedecin, idAssurabilite) VALUES ($numeroNISS,
 '$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe',
-1213,'$numeroAssu')";
->>>>>>> 2123a1e4d803b08ae6ef875ed161adc271d67b96
+" . (isset($numeroInamiMedecin) ? $numeroInamiMedecin : "NULL") . ",'$numeroAssu')";
+
 echo $sql;
 $Resultat = $base->exec($sql);
 echo $Resultat;
+
 if ($Resultat ==true){
 	echo "Patient ajouté avec succès !<br>";
         $idVisite=52; // on met 3 mais cette valeur est a changé par 1 car l'id de la visite ne sera jamais associer a un rapport il faut juste la mettre en tant que ligne nécessaire dans le code qui permettra juste de remplir la table encode pour associer le patient au numéro inamie !
         // Association du patient avec l'infirmière dans la table `encode`
         $sqlEncode = "INSERT INTO encode (numeroInami, numeroNISS,idVisite) VALUES (:numeroInami, :numeroNISS,:idVisite)";
         $stmtEncode = $base->prepare($sqlEncode);
-        $stmtEncode->bindParam(':numeroInami', $numeroInami_inf);
+        $stmtEncode->bindParam(':numeroInami', $numeroInami);
         $stmtEncode->bindParam(':numeroNISS', $numeroNISS);
         $stmtEncode->bindParam(':idVisite', $idVisite);
         $stmtEncode->execute();
 	header("Location:home.patient.html");
 	exit();
 }
-
 ?>
