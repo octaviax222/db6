@@ -59,7 +59,7 @@
                             $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
                             $base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
-                            $sql = "SELECT numeroInamiMedecin, nom, prenom FROM medecintraitant";
+                            $sql = "SELECT numeroInamiMedecin, nom, prenom FROM medecintraitant ORDER BY nom ASC, prenom ASC";
                             $stmt = $base->query($sql);
 
                             // Récupération des données dans un tableau associatif
