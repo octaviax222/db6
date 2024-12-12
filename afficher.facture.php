@@ -6,7 +6,7 @@ $numeroInami = $_SESSION['numeroInami'];
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
     // Préparer la requête SQL
-    $sql = "
+    $sql = ("
         SELECT  
             prestataire.numeroInami AS prestataireNumeroInami,
             prestataire.nom AS prestataireNom,
@@ -21,84 +21,37 @@ try {
             encode.numeroNiss AS encodeNumeroNiss,
             encode.idVisite AS encodeIdVisite,
             encode.numeroInami AS encodeNumeroInami,
-                    
+
             visite.dateR AS visiteDateR,
             visite.idVisite AS visiteIdVisite,
 
             realise.idSoins AS realiseIdsoins,
             realise.idVisite as realiseIdVisite,
-                    
+
             soins.idSoins AS soinsIdSoins,
             soins.idFacturation AS soinsIdFacturation,
-            soins.descriptionTypeSoin AS soinsDescriptionTypeSoin,
 
-                    toilette.idToilette AS toiletteIdToilette
-                    toilette.forfait AS toiletteForfait
+            toilette.forfait AS toiletteForfait,
+            toilette.idToilette AS toiletteIdToilette,
 
-                    typeSoins.idInamiTypeSoins AS typeSoinsIdInamiTypeSoins
-                    
-                    facturation.idFacturation AS facturationIdFacturation
-        FROM  
+            typeSoins.idInamiTypeSoins AS typeSoinsIdInamiTypeSoins,
+
+            facturation.idFacturation AS facturationIdFacturation,
+            facturation.dateFacturation AS facturationDateFacturation
+        FROM
             encode
         JOIN prestataire ON encode.numeroInami = prestataire.numeroInami
         JOIN patient ON encode.numeroNiss = patient.numeroNiss
         JOIN visite ON encode.idVisite = visite.idVisite
         JOIN realise ON visite.idVisite = realise.idVisite
-        JOIN soins ON realise.idInamiTypeSoin = soins.idInamiTypeSoin
+        JOIN soins ON realise.idSoins = soins.idSoins
+        LEFT JOIN toilette ON soins.idToilette = toilette.idToilette
+        JOIN typeSoins ON soins.idInamiTypeSoins = typeSoins.idInamiTypeSoins
         JOIN facturation ON soins.idFacturation = facturation.idFacturation
-        WHERE 
-            encode.numeroInami = :numeroInami AND
-            visite.dateR BETWEEN :dateDebut AND :dateFin;
-    ";
-
-$base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
-// Préparer la requête SQL
-$sql =("
-SELECT
-    prestataire.numeroInami AS prestataireNumeroInami,
-    prestataire.nom AS prestataireNom,
-    prestataire.prenom AS prestatairePrenom,
-
-    patient.numeroNiss AS patientNumeroNiss,
-    patient.nom AS patientNom,
-    patient.prenom AS patientPrenom,
-    patient.numeroInami AS patientNumeroInami,
-    patient.idAssurabilite AS patientIdAssurabilite,
-
-    encode.numeroNiss AS encodeNumeroNiss,
-    encode.idVisite AS encodeIdVisite,
-    encode.numeroInami AS encodeNumeroInami,
-
-    visite.dateR AS visiteDateR,
-    visite.idVisite AS visiteIdVisite,
-
-    realise.idSoins AS realiseIdsoins,
-    realise.idVisite as realiseIdVisite,
-
-    soins.idSoins AS soinsIdSoins,
-    soins.idFacturation AS soinsIdFacturation,
-
-    toilette.forfait AS toiletteForfait,
-    toilette.idToilette AS toiletteIdToilette,
-
-    typeSoins.idInamiTypeSoins AS typeSoinsIdInamiTypeSoins,
-
-    facturation.idFacturation AS facturationIdFacturation,
-    facturation.dateFacturation AS facturationDateFacturation
-FROM
-    encode
-JOIN prestataire ON encode.numeroInami = prestataire.numeroInami
-JOIN patient ON encode.numeroNiss = patient.numeroNiss
-JOIN visite ON encode.idVisite = visite.idVisite
-JOIN realise ON visite.idVisite = realise.idVisite
-JOIN soins ON realise.idSoins = soins.idSoins
-LEFT JOIN toilette ON soins.idToilette = toilette.idToilette
-JOIN typeSoins ON soins.idInamiTypeSoins = typeSoins.idInamiTypeSoins
-JOIN facturation ON soins.idFacturation = facturation.idFacturation
-WHERE
-encode.numeroInami = :numeroInami AND
-visite.dateR BETWEEN :dateDebut AND :dateFin;
-");
+        WHERE
+        encode.numeroInami = :numeroInami AND
+        visite.dateR BETWEEN :dateDebut AND :dateFin;
+    ");
 // Vérifier si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $dateDebut = $_POST['dateDebut'] ?? null;
@@ -140,12 +93,12 @@ $pdf->Ln();
 foreach ($facturations as $ligne) {
     $pdf->Cell(25, 10, $ligne['facturationDateFacturation'], 1);
     $pdf->Cell(20, 10, $ligne['visiteDateR'], 1);
-$pdf->Cell(30, 10, $ligne['prestataireNom'], 1);
-$pdf->Cell(30, 10, $ligne['prestatairePrenom'], 1);
-$pdf->Cell(40, 10, $ligne['patientNumeroNiss'], 1);
-$pdf->Cell(40, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1);
-$pdf->Cell(20, 10, $ligne['toiletteForfait'], 1);
-$pdf->Ln();
+    $pdf->Cell(30, 10, $ligne['prestataireNom'], 1);
+    $pdf->Cell(30, 10, $ligne['prestatairePrenom'], 1);
+    $pdf->Cell(40, 10, $ligne['patientNumeroNiss'], 1);
+    $pdf->Cell(40, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1);
+    $pdf->Cell(20, 10, $ligne['toiletteForfait'], 1);
+    $pdf->Ln();
 }
 // Enregistrer le PDF ou l'afficher
 $pdf->Output('facturations.pdf', 'D'); // 'D' pour télécharger le fichier
