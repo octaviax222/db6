@@ -1,4 +1,8 @@
 <?php
+
+session_start();
+$numeroInami = $_SESSION['numeroInami'];
+
 try {
     // Connexion à la base de données
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
@@ -14,6 +18,21 @@ try {
     $evaluationTraitement = $_POST['evaluationTraitement'];
     $observationClinique = $_POST['observationClinique'];
 
+    $sqlCheck = "SELECT rapportpatient.IdRapport
+			FROM rapportpatient 
+			JOIN visite v ON rapportpatient.IdRapport = v.IdRapport
+			JOIN encode e ON v.IdVisite = e.IdVisite
+			WHERE e.NumeroInami = :numeroInami AND rapportpatient.IdRapport = :idmod";
+
+    $stmt = $base->prepare($sqlCheck);
+    $stmt->bindParam(":numeroInami", $numeroInami);
+    $stmt->bindParam(":idmod", $idmod);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        $updateFields = [];
+        $params[':idmod'] = $idmod;
+
         if (empty($idmod) || !is_numeric($idmod)) {
             die("Erreur : L'ID du rapport est manquant ou invalide.");
         }
@@ -21,23 +40,32 @@ try {
         // Déterminer quelle colonne mettre à jour
         if (!empty($evaluationTraitement) && empty($observationClinique)) {
             // Si seule l'évaluation est fournie
-            $sql = "UPDATE rapportpatient SET evaluationTraitement = '$evaluationTraitement' WHERE idRapport = $idmod";
+            $sqlUpdate = "UPDATE rapportpatient SET evaluationTraitement = '$evaluationTraitement' WHERE idRapport = :idmod";
         } elseif (empty($evaluationTraitement) && !empty($observationClinique)) {
             // Si seule l'observation clinique est fournie
-            $sql = "UPDATE rapportpatient SET observationClinique = '$observationClinique' WHERE idRapport = $idmod";
+            $sqlUpdate = "UPDATE rapportpatient SET observationClinique = '$observationClinique' WHERE idRapport = :idmod";
         } elseif (!empty($evaluationTraitement) && !empty($observationClinique)) {
             // Si les deux sont fournies
-            $sql = "UPDATE rapportpatient SET evaluationTraitement = '$evaluationTraitement', observationClinique = '$observationClinique' WHERE idRapport = $idmod";
+            $sqlUpdate = "UPDATE rapportpatient SET evaluationTraitement = '$evaluationTraitement', observationClinique = '$observationClinique' WHERE idRapport = :idmod";
         } else {
             // Aucun des champs n'est fourni
             echo "Aucune donnée à mettre à jour.";
             exit;
         }
 
-    // Exécuter la requête
-    $base->exec($sql);
+        $stmtUpdate = $base->prepare($sqlUpdate);
+        $stmtUpdate->execute($params);
+        echo "<h3>Le rapport avec l'ID $idmod a été modifié avec succès.</h3>";
+        header("home.rapport.html");
 
-    echo "<h3>Le rapport avec l'ID $idmod a été modifié avec succès.</h3>";
+    } else {
+        // Affichage d'une alerte en cas d'erreur
+        echo "<script>
+            alert('Erreur : Ce rapport ne vous appartient pas ou n\'existe pas.');
+            window.location.href = 'home.rapport.html';
+        </script>";
+        exit;
+    }
 } catch (Exception $e) {
     // Afficher l'erreur
     die('Erreur : ' . $e->getMessage());
