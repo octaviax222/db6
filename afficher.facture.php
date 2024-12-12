@@ -15,7 +15,6 @@ try {
             patient.numeroNiss AS patientNumeroNiss,
             patient.nom AS patientNom,
             patient.prenom AS patientPrenom,
-            patient.numeroInami AS patientNumeroInami,
             patient.idAssurabilite AS patientIdAssurabilite,
 
             encode.numeroNiss AS encodeNumeroNiss,
