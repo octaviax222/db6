@@ -2,12 +2,16 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <div class="col">
+            <button class="btn btn-primary" style="margin-top: 32px;">
+            <a href="home.visite.html" style="color: white; text-decoration: none;">Retour</a>
+            </button>
+        </div>
         <title>Modification d'une visite</title> 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body>
         <div class="container mt-5">
-            <p><button class="w3-button w3-orange w3-round"><a href="home.visite.html">RETOUR</a> </button></p>
             <h1 class="text-center mb-4">Modifier une visite</h1>
             <form action="modifier.visite.php" method="POST">
                 <div class="form-group">
