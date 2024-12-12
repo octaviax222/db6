@@ -11,6 +11,11 @@
             <form action="ajout.visite.final.php" method="POST">
 
                 <div class="container mt-5">
+                <div class="col">
+                    <button class="btn btn-primary" style="margin-top: 32px;">
+                    <a href="home.visite.html" style="color: white; text-decoration: none;">Retour</a>
+                    </button>
+                </div>
                 <h1 class="text-center mb-4">Ajouter une visite</h1>
                 <label>Sélectionnez les patients :</label><br>
                     <?php

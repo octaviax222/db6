@@ -8,6 +8,11 @@
 </head>
 <body>
     <div class="container mt-5">
+    <div class="col">
+        <button class="btn btn-primary" style="margin-top: 32px;">
+        <a href="home.rapport.html" style="color: white; text-decoration: none;">Retour</a>
+        </button>
+    </div>
         <h1 class="text-center">Ajout d'un rapport</h1>
         <h2>Ajouter un rapport</h2>
         

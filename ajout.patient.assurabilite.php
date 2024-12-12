@@ -7,6 +7,11 @@
     </head>
     <body>
         <div class="container mt-5">
+        <div class="col">
+            <button class="btn btn-primary" style="margin-top: 32px;">
+            <a href="home.patient.html" style="color: white; text-decoration: none;">Retour</a>
+            </button>
+        </div>
             <h1 class="text-center mb-4">Ajouter un Patient</h1>
             <form action="ajout.patient.php" method="POST">
                 <div class="form-group">

@@ -7,7 +7,7 @@ $numeroInami = $_SESSION['numeroInami'];
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
 
-    $sql = "SELECT v.*
+    $sql = "SELECT v.*, patient.nom AS patientNom, patient.prenom AS patientPrenom
     FROM visite v
     JOIN encode e ON v.IdVisite = e.idVisite
     JOIN patient p ON e.numeroNISS = p.numeroNISS
@@ -20,6 +20,8 @@ try {
     
     while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $idVisite = htmlspecialchars($ligne['idVisite']);
+        $patientNom = htmlspecialchars($ligne['patientNom']);
+        $patientPrenom = htmlspecialchars($ligne['patientPrenom']);
         $date_visite = htmlspecialchars($ligne['dateR']);
         $description = htmlspecialchars($ligne['description']);
         $frequence = htmlspecialchars($ligne['frequence']);
@@ -34,6 +36,8 @@ try {
         
         echo "<tr>";
         echo "<td>$idVisite</td>";
+        echo "<td>$patientNom</td>";
+        echo "<td>$patientPrenom</td>";
         echo "<td>$date_visite</td>";
         echo "<td>$description</td>";
         echo "<td>$frequence</td>";
