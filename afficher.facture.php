@@ -17,6 +17,10 @@ try {
             patient.prenom AS patientPrenom,
             patient.idAssurabilite AS patientIdAssurabilite,
 
+            assurabilité.idAssurabilite AS assurabilitéIdAssurabilite,
+            assurabilité.organismeAssureur AS assurabilitéOrganismeAssureur,
+            assurabilité.typeAssurabilite AS assurabilitéTypeAssurabilite,
+
             encode.numeroNiss AS encodeNumeroNiss,
             encode.idVisite AS encodeIdVisite,
             encode.numeroInami AS encodeNumeroInami,
@@ -41,6 +45,7 @@ try {
             encode
         JOIN prestataire ON encode.numeroInami = prestataire.numeroInami
         JOIN patient ON encode.numeroNiss = patient.numeroNiss
+        JOIN assurabilité ON patient.idAssurabilite = assurabilité.idAssurabilite
         JOIN visite ON encode.idVisite = visite.idVisite
         JOIN realise ON visite.idVisite = realise.idVisite
         JOIN soins ON realise.idSoins = soins.idSoins
@@ -67,6 +72,7 @@ $facturations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
 $facturations = [];
 }
+$toiletteForfait = $_POST['toiletteForfait'] ?? 'Pas de forfait';
 // Si le bouton 'generate_pdf' est cliqué, générer le PDF
 if (isset($_POST['generate_pdf']) && !empty($facturations)) {
 require_once('vendor/autoload.php'); // Inclure TCPDF
@@ -80,24 +86,29 @@ $pdf->Cell(0, 10, 'Liste des Facturations', 0, 1, 'C');
 $pdf->SetFont('helvetica', '', 9);
 $pdf->Ln(10);
 // En-têtes de colonnes
-$pdf->Cell(25, 10, 'Date facturation', 1);
-$pdf->Cell(20, 10, 'Date visite', 1);
-$pdf->Cell(30, 10, 'Nom Prestataire', 1);
-$pdf->Cell(30, 10, 'Prenom Prestataire', 1);
-$pdf->Cell(40, 10, 'Numero NISS Patient', 1);
-$pdf->Cell(30, 10, 'Numero INAMI Soin', 1);
-$pdf->Cell(20, 10, 'Forfait', 1);
-$pdf->Ln();
+$pdf->SetFont('helvetica', 'B', 10); // Police pour les en-têtes
+$pdf->MultiCell(23, 10, 'Date facturation', 1, 'C', 0, 0);
+$pdf->MultiCell(20, 10, 'Date visite', 1, 'C', 0, 0);
+$pdf->MultiCell(23, 10, 'Nom Prestataire', 1, 'C', 0, 0);
+$pdf->MultiCell(23, 10, 'Prénom Prestataire', 1, 'C', 0, 0);
+$pdf->MultiCell(25, 10, 'Numéro NISS Patient', 1, 'C', 0, 0);
+$pdf->MultiCell(20, 10, 'Assurabilité', 1, 'C', 0, 0);
+$pdf->MultiCell(20, 10, 'Assurabilité', 1, 'C', 0, 0);
+$pdf->MultiCell(26, 10, 'Numéro INAMI Soin', 1, 'C', 0, 0);
+$pdf->MultiCell(15, 10, 'Forfait', 1, 'C', 0, 1);
 // Remplir les données
 foreach ($facturations as $ligne) {
-    $pdf->Cell(25, 10, $ligne['facturationDateFacturation'], 1);
-    $pdf->Cell(20, 10, $ligne['visiteDateR'], 1);
-    $pdf->Cell(30, 10, $ligne['prestataireNom'], 1);
-    $pdf->Cell(30, 10, $ligne['prestatairePrenom'], 1);
-    $pdf->Cell(40, 10, $ligne['patientNumeroNiss'], 1);
-    $pdf->Cell(30, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1);
-    $pdf->Cell(20, 10, $ligne['toiletteForfait'], 1);
-    $pdf->Ln();
+        $toiletteForfait = $ligne['toiletteForfait'] ?? 'Pas de forfait'; 
+        $pdf->MultiCell(23, 10, $ligne['facturationDateFacturation'], 1, 'C', 0, 0);
+        $pdf->MultiCell(20, 10, $ligne['visiteDateR'], 1, 'C', 0, 0);
+        $pdf->MultiCell(23, 10, $ligne['prestataireNom'], 1, 'C', 0, 0);
+        $pdf->MultiCell(23, 10, $ligne['prestatairePrenom'], 1, 'C', 0, 0);
+        $pdf->MultiCell(25, 10, $ligne['patientNumeroNiss'], 1, 'C', 0, 0);
+        $pdf->MultiCell(20, 10, $ligne['assurabilitéOrganismeAssureur'], 1, 'C', 0, 0);
+        $pdf->MultiCell(20, 10, $ligne['assurabilitéTypeAssurabilite'], 1, 'C', 0, 0);
+        $pdf->MultiCell(26, 10, $ligne['typeSoinsIdInamiTypeSoins'], 1, 'C', 0, 0);
+        $pdf->MultiCell(15, 10, $toiletteForfait, 1, 'C', 0, 1); // Notez le dernier paramètre "1" pour un saut de ligne
+    
 }
 // Enregistrer le PDF ou l'afficher
 $pdf->Output('facturations.pdf', 'D'); // 'D' pour télécharger le fichier
