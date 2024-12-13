@@ -55,10 +55,8 @@ if ($count > 0) {
 	exit();
 }
 
-$sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue,
-numeroDomicile, ville, sexe, numeroInamiMedecin, idAssurabilite) VALUES ($numeroNISS,
-'$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe',
-" . (isset($numeroInamiMedecin) ? $numeroInamiMedecin : "NULL") . ",'$numeroAssu')";
+$sql = "INSERT INTO patient(numeroNiss, nom, prenom, dateDeNaissance, rue, numeroDomicile, ville, sexe, numeroInamiMedecin, idAssurabilite) 
+VALUES ($numeroNISS,'$nom', '$prenom', '$dateDeNaissance', '$rue', $numeroDomicile, '$ville', '$sexe'," . (isset($numeroInamiMedecin) ? $numeroInamiMedecin : "NULL") . ",'$numeroAssu')";
 
 echo $sql;
 $Resultat = $base->exec($sql);
