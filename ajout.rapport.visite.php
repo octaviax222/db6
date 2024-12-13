@@ -8,11 +8,6 @@
 </head>
 <body>
     <div class="container mt-5">
-    <div class="col">
-        <button class="btn btn-primary" style="margin-top: 32px;">
-        <a href="home.rapport.html" style="color: white; text-decoration: none;">Retour</a>
-        </button>
-    </div>
         <h1 class="text-center">Ajout d'un rapport</h1>
         <h2>Ajouter un rapport</h2>
         
@@ -20,12 +15,25 @@
             <div class="form-group">
                   <label>Sélectionnez les visites à inclure dans le rapport :</label><br>
                   <?php
+                  session_start(); // on se connecte à la session afin d'avoir les informations 
                   // Connexion à la base de données
                   $db = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
                   
                   // Récupère les visites sans rapport associé
-                  $query = $db->query("SELECT idVisite, dateR, description, heure FROM visite WHERE idRapport is NULL");
-  
+                  //$query = $db->query("SELECT idVisite, dateR, description, heure FROM visite WHERE idRapport is NULL");
+                  $numeroInami = $_SESSION['numeroInami'];
+
+                  // Prépare la requête pour récupérer uniquement les patients associés à l'infirmière connectée
+                   $query = $db->prepare(
+                    "SELECT v.idVisite, v.dateR, v.description, v.heure
+                    FROM visite v
+                    JOIN encode e ON v.idVisite = e.idVisite
+                    WHERE e.NumeroInami = :numeroInami
+                    AND v.idRapport IS NULL 
+                    AND v.idVisite !=52 ");
+                    $query->bindParam(':numeroInami', $numeroInami);
+                    $query->execute();
+
                   while ($visite = $query->fetch(PDO::FETCH_ASSOC)) {
                       echo '<div>';
                       echo '<input type="checkbox" name="visites[]" value="' . $visite['idVisite'] . '"> ';// permet de donner l'option pour cocher 
@@ -52,6 +60,9 @@
     </div>
 </body>
 </html>
+
+
+
 
 
 
