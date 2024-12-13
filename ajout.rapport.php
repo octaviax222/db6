@@ -6,12 +6,9 @@
     $evaluationTraitement = $_POST['evaluationTraitement'];
     $observationClinique = $_POST['observationClinique'];
     $visites = $_POST['visites'];  // Récupère les visites sélectionnées
-    echo "ok";
+    
     // Insertion du rapport dans la table rapportpatient
-
-
     $sql = "INSERT INTO rapportpatient(idRapport, evaluationTraitement, observationClinique) VALUES(NULL, '$evaluationTraitement','$observationClinique')";
-    //$stmt = $base->prepare($sql);
     $Resultat = $base->exec($sql);
     // Récupération de l'ID du rapport nouvellement créé
     $idRapport = $base->lastInsertId();
