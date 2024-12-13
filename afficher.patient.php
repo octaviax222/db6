@@ -56,7 +56,7 @@ try {
         echo "<td>$sexe</td>";
         echo "<td>$inami</td>";
         echo "<td>$assureur - $typeAssurabilite</td>";
-        echo "<td><a href='supprimer.html?chkid=$niss' class='btn btn-danger btn-sm'>Supprimer</a></td>";
+        echo "<td><a href='supprimer.patient.html?chkid=$niss' class='btn btn-danger btn-sm'>Supprimer</a></td>";
         echo "</tr>";
     }
 } catch (Exception $e) {

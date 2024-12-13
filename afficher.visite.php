@@ -43,7 +43,7 @@ try {
         echo "<td>$frequence</td>";
         echo "<td>$heure</td>";
         echo "<td>$idRapport</td>";   
-        echo "<td><a href='supprimer.html?chkid=$idVisite' class='btn btn-danger btn-sm'>Supprimer</a></td>";
+        echo "<td><a href='supprimer.visite.html?chkid=$idVisite' class='btn btn-danger btn-sm'>Supprimer</a></td>";
         echo "</tr>";
     }
 } catch (Exception $e) {
