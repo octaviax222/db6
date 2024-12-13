@@ -43,12 +43,17 @@ if ($user) {
 		exit();
         
     } else {
-        echo "Mot de passe incorrect.";
-		sleep(2);
-		header("Location:connexion.html");
-		exit();
+        echo "<script>
+        alert('Erreur : Mot de passe incorrect.');
+        window.location.href = 'connexion.html';
+        </script>";
+        exit();
     }
 } else {
-    echo "Numéro INAMI non trouvé.";
+        echo "<script>
+        alert('Accès non autorisé.');
+        window.location.href = 'connexion.html';
+    </script>";
+    exit();
 }
 ?>
