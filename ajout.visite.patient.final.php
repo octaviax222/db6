@@ -46,10 +46,15 @@
                     // Récupère les visites sans rapport associé
                     //$query = $db->query("SELECT numeroNiss, nom, prenom FROM patient");
                         // atttentionnn afficherrr patient prestataire
-                    while ($patient = $query->fetch(PDO::FETCH_ASSOC)) {
+                    if ($query->rowcount()>0){while ($patient = $query->fetch(PDO::FETCH_ASSOC)) {
                         echo '<div>';
                         echo '<input type="checkbox" name="patients[]" value="' . $patient['numeroNiss'] . '"> ';
                         echo 'Patient ' . $patient['numeroNiss'] . ' - ' . $patient['nom'] . ' ' . $patient['prenom'];
+                        echo '</div>';}
+                    }else{
+                        // Affiche un message si aucune visite n'est disponible
+                        echo '<div class="alert alert-warning" role="alert">';
+                        echo 'Aucun patient disponible pour créer une visite.';
                         echo '</div>';
                     }
                     

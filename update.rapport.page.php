@@ -1,3 +1,54 @@
+<?php
+
+session_start();
+$numeroInami = $_SESSION['numeroInami'];
+
+try {
+	
+		$base = new PDO('mysql:host=143.47.179.70:443;dbname=db6','user6','user6');
+		$base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		
+
+		$sqlCheck = "SELECT DISTINCT rapportpatient.IdRapport 
+                 FROM rapportpatient 
+                 JOIN visite v ON rapportpatient.IdRapport = v.IdRapport
+                 JOIN encode e ON v.IdVisite = e.idVisite
+                 WHERE e.numeroInami = :numeroInami";
+			$stmtCheck = $base->prepare($sqlCheck);
+			$stmtCheck->execute([':numeroInami' => $numeroInami]);
+
+			// Si le rapport appartient à l'infirmière, procéder à la suppression
+			if ($stmtCheck->rowCount() == 0) {
+
+				echo '
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aucun rapport disponible</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="alert alert-warning text-center" role="alert">
+                <h4>Aucun rapport n\'est disponible pour le moment.</h4>
+            </div>
+            <div class="text-center mt-3">
+                <a href="home.rapport.html" class="btn btn-primary">Retour au menu de la gestion des rapports</a>
+            </div>
+        </div>
+    </body>
+    </html>';
+    exit;
+			}
+			
+	}
+ catch (PDOException $e) {
+    echo "Erreur de connexion : " . $e->getMessage();
+}
+?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">

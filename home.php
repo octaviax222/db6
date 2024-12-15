@@ -36,7 +36,7 @@ $prenom = $_SESSION['prenom'];
     </header>
     <div class="container">
         <div class="button-row">
-            <button type="button" class="btn1"><a href="home.patient.html">PATIENT</a></button>
+            <button type="button" class="btn1"><a href="home.patient.html">PATIENTS</a></button>
             <button type="button" class="btn1"><a href="home.visite.html">VISITES</a></button>
         </div>
         <div class="button-row">

@@ -1,3 +1,53 @@
+<?php
+
+session_start();
+$numeroInami = $_SESSION['numeroInami'];
+
+try {
+	
+		$base = new PDO('mysql:host=143.47.179.70:443;dbname=db6','user6','user6');
+		$base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sqlCheck = "SELECT DISTINCT p.* 
+        FROM encode
+        JOIN patient p ON encode.numeroNiss = p.numeroNiss
+        WHERE encode.numeroInami = :numeroInami";
+			$stmtCheck = $base->prepare($sqlCheck);
+			$stmtCheck->execute([':numeroInami' => $numeroInami]);
+
+			// Si le rapport appartient à l'infirmière, procéder à la suppression
+			if ($stmtCheck->rowCount() == 0) {
+
+				echo '
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aucun rapport disponible</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="alert alert-warning text-center" role="alert">
+                <h4>Aucun patient n\'est encodé pour le moment.</h4>
+            </div>
+            <div class="text-center mt-3">
+                <a href="home.patient.html" class="btn btn-primary">Retour au menu de la gestion des patients</a>
+            </div>
+        </div>
+    </body>
+    </html>';
+    exit;
+			}
+			
+	}
+ catch (PDOException $e) {
+    echo "Erreur de connexion : " . $e->getMessage();
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +84,7 @@
                 $base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                 // Requête pour récupérer les informations du patient
-                $stmt = $base->prepare("SELECT * FROM patient WHERE numeroNISS =?");
+                $stmt = $base->prepare("SELECT * FROM patient WHERE numeroNiss =?");
                 $stmt->execute([$searchNISS]);
                 $patient = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -47,8 +97,8 @@
             
 
             <div class="form-group">
-                <label for="numeroNISS">Numéro NISS</label>
-                <input type="text" class="form-control" id="numeroNISS" name="numeroNISS" value="<?php echo htmlspecialchars($patient['numeroNiss']); ?>" required>
+                <label for="numeroNiss">Numéro NISS</label>
+                <input type="text" class="form-control" id="numeroNiss" name="numeroNiss" value="<?php echo htmlspecialchars($patient['numeroNiss']); ?>" required>
             </div>
             <div class="form-group">
                 <label for="nom">Nom</label>

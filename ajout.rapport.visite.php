@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <div class="col">
+        <button class="btn btn-primary" style="margin-top: 32px;">
+            <a href="home.rapport.html" style="color: white; text-decoration: none;">Retour</a>
+        </button>
+    </div>
     <title>Ajout d'un rapport</title> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="text-center">Ajout d'un rapport</h1>
-        <h2>Ajouter un rapport</h2>
         
         <form action="ajout.rapport.php" method="post">
             <div class="form-group">
@@ -33,12 +37,18 @@
                     AND v.idVisite !=52 ");
                     $query->bindParam(':numeroInami', $numeroInami);
                     $query->execute();
-
-                  while ($visite = $query->fetch(PDO::FETCH_ASSOC)) {
-                      echo '<div>';
-                      echo '<input type="checkbox" name="visites[]" value="' . $visite['idVisite'] . '"> ';// permet de donner l'option pour cocher 
-                      echo 'Visite ' . $visite['idVisite'] . ' - ' . $visite['dateR'] . ' - ' . $visite['description'];
-                      echo '</div>';
+                  if ($query -> rowCount() > 0){
+                    while ($visite = $query->fetch(PDO::FETCH_ASSOC)) {
+                        echo '<div>';
+                        echo '<input type="checkbox" name="visites[]" value="' . $visite['idVisite'] . '"> ';// permet de donner l'option pour cocher 
+                        echo 'Visite ' . $visite['idVisite'] . ' - ' . $visite['dateR'] . ' - ' . $visite['description'];
+                        echo '</div>';
+                    }
+                  } else {
+                    // Affiche un message si aucune visite n'est disponible
+                        echo '<div class="alert alert-warning" role="alert">';
+                        echo 'Aucune visite disponible pour ajouter un rapport.';
+                        echo '</div>';
                   }
                   ?>
               </div>
