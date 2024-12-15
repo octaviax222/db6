@@ -3,6 +3,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 session_start();
 $numeroInami = $_SESSION['numeroInami'];
+$visitesTrouves = false;
 
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
@@ -17,37 +18,42 @@ try {
     $stmt = $base->prepare($sql);
     $stmt->bindParam(":numeroInami", $numeroInami);
     $stmt->execute();
+    if ($stmt->rowcount() >0){
+        while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $idVisite = htmlspecialchars($ligne['idVisite']);
+            $patientNom = htmlspecialchars($ligne['patientNom']);
+            $patientPrenom = htmlspecialchars($ligne['patientPrenom']);
+            $date_visite = htmlspecialchars($ligne['dateR']);
+            $description = htmlspecialchars($ligne['description']);
+            $frequence = htmlspecialchars($ligne['frequence']);
+            $heure = htmlspecialchars($ligne['heure']);
     
-    while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $idVisite = htmlspecialchars($ligne['idVisite']);
-        $patientNom = htmlspecialchars($ligne['patientNom']);
-        $patientPrenom = htmlspecialchars($ligne['patientPrenom']);
-        $date_visite = htmlspecialchars($ligne['dateR']);
-        $description = htmlspecialchars($ligne['description']);
-        $frequence = htmlspecialchars($ligne['frequence']);
-        $heure = htmlspecialchars($ligne['heure']);
-
-        //$idRapport = -1;
-        if (is_null($ligne['idRapport'])){
-            $idRapport = "";
-        }else{
-            $idRapport = htmlspecialchars($ligne['idRapport']);
+            //$idRapport = -1;
+            if (is_null($ligne['idRapport'])){
+                $idRapport = "";
+            }else{
+                $idRapport = htmlspecialchars($ligne['idRapport']);
+            }
+            
+            echo "<tr>";
+            echo "<td>$idVisite</td>";
+            echo "<td>$patientNom</td>";
+            echo "<td>$patientPrenom</td>";
+            echo "<td>$date_visite</td>";
+            echo "<td>$description</td>";
+            echo "<td>$frequence</td>";
+            echo "<td>$heure</td>";
+            echo "<td>$idRapport</td>";   
+            echo "<td><a href='supprimer.visite.html?chkid=$idVisite' class='btn btn-danger btn-sm'>Supprimer</a></td>";
+            echo "</tr>";
         }
-        
-        echo "<tr>";
-        echo "<td>$idVisite</td>";
-        echo "<td>$patientNom</td>";
-        echo "<td>$patientPrenom</td>";
-        echo "<td>$date_visite</td>";
-        echo "<td>$description</td>";
-        echo "<td>$frequence</td>";
-        echo "<td>$heure</td>";
-        echo "<td>$idRapport</td>";   
-        echo "<td><a href='supprimer.visite.html?chkid=$idVisite' class='btn btn-danger btn-sm'>Supprimer</a></td>";
-        echo "</tr>";
-    }
-} catch (Exception $e) {
+    } 
+}catch (Exception $e) {
     echo "Erreur : " . $e->getMessage();
 }
+if (!$visitesTrouves) {
+    echo "<tr><td colspan='11' class='text-center'>Aucune visite encodée pour le moment</td></tr>";
+}
+    
 
 ?>

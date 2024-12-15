@@ -2,6 +2,7 @@
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 $numeroInami = $_SESSION['numeroInami'];
+$patientsTrouves = false;
 
 try {
     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
@@ -31,35 +32,41 @@ try {
     $stmt = $base->prepare($sql);
     $stmt->bindParam(':numeroInami', $numeroInami, PDO::PARAM_STR);
     $stmt->execute();
+    if ($stmt->rowcount() >0){
+        while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $patientsTrouves = true; 
+            $niss = htmlspecialchars($ligne['numeroNiss']);
+            $nom = htmlspecialchars($ligne['nom']);
+            $prenom = htmlspecialchars($ligne['prenom']);
+            $dateNaissance = htmlspecialchars($ligne['dateDeNaissance']);
+            $rue = htmlspecialchars($ligne['rue']);
+            $num = htmlspecialchars($ligne['numeroDomicile']);
+            $ville = htmlspecialchars($ligne['ville']);
+            $sexe = htmlspecialchars($ligne['sexe']);
+            $inami = isset($ligne['numeroInamiMedecin']) ? htmlspecialchars($ligne['numeroInamiMedecin']) : "";
+            $assureur = htmlspecialchars($ligne['organismeAssureur']);
+            $typeAssurabilite = htmlspecialchars($ligne['typeAssurabilite']);
     
-    while ($ligne = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $niss = htmlspecialchars($ligne['numeroNiss']);
-        $nom = htmlspecialchars($ligne['nom']);
-        $prenom = htmlspecialchars($ligne['prenom']);
-        $dateNaissance = htmlspecialchars($ligne['dateDeNaissance']);
-        $rue = htmlspecialchars($ligne['rue']);
-        $num = htmlspecialchars($ligne['numeroDomicile']);
-        $ville = htmlspecialchars($ligne['ville']);
-        $sexe = htmlspecialchars($ligne['sexe']);
-        $inami = isset($ligne['numeroInamiMedecin']) ? htmlspecialchars($ligne['numeroInamiMedecin']) : "";
-        $assureur = htmlspecialchars($ligne['organismeAssureur']);
-        $typeAssurabilite = htmlspecialchars($ligne['typeAssurabilite']);
-
-        echo "<tr>";
-        echo "<td>$niss</td>";
-        echo "<td>$nom</td>";
-        echo "<td>$prenom</td>";
-        echo "<td>$dateNaissance</td>";
-        echo "<td>$rue</td>";
-        echo "<td>$num</td>";
-        echo "<td>$ville</td>";
-        echo "<td>$sexe</td>";
-        echo "<td>$inami</td>";
-        echo "<td>$assureur - $typeAssurabilite</td>";
-        echo "<td><a href='supprimer.patient.html?chkid=$niss' class='btn btn-danger btn-sm'>Supprimer</a></td>";
-        echo "</tr>";
+            echo "<tr>";
+            echo "<td>$niss</td>";
+            echo "<td>$nom</td>";
+            echo "<td>$prenom</td>";
+            echo "<td>$dateNaissance</td>";
+            echo "<td>$rue</td>";
+            echo "<td>$num</td>";
+            echo "<td>$ville</td>";
+            echo "<td>$sexe</td>";
+            echo "<td>$inami</td>";
+            echo "<td>$assureur - $typeAssurabilite</td>";
+            echo "<td><a href='supprimer.patient.html?chkid=$niss' class='btn btn-danger btn-sm'>Supprimer</a></td>";
+            echo "</tr>";
+        }
     }
+    
 } catch (Exception $e) {
     echo "Erreur : " . $e->getMessage();
+}
+if (!$patientsTrouves) {
+    echo "<tr><td colspan='11' class='text-center'>Aucun patient encodé pour le moment</td></tr>";
 }
 ?>
