@@ -109,15 +109,16 @@ try {
 
         // Si la facture appartient à l'infirmière, procéder à la suppression
         if ($stmt->rowCount() > 0) {
-            $deleteSql = "DELETE FROM facturation WHERE idFacturation = :supp";
-            $deleteStmt = $base->prepare($deleteSql);
-            $deleteStmt->execute([':supp' => $supp]);
+            // Dissocier la facture des soins (mettre l'idFacturation à NULL)
+            $updateSql = "UPDATE soins SET idFacturation = NULL WHERE idFacturation = :supp";
+            $updateStmt = $base->prepare($updateSql);
+            $updateStmt->execute([':supp' => $supp]);
 
-            echo "<br>La facture " . $supp . " est supprimée";
+            echo "<br>La facture " . $supp . " est dissociée des soins.";
             // Redirection après succès
-			header("Location:home.facturation.html");
+            header("Location:home.facturation.html");
             exit;
-    } else {
+        } else {
             // Affichage d'une alerte en cas d'erreur
             echo "<script>
                 alert('Erreur : Cette facture ne vous appartient pas ou n\'existe pas.');
