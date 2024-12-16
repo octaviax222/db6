@@ -53,7 +53,7 @@ try {
 <head>
     <div class="col">
             <button class="btn btn-primary" style="margin-top: 32px;">
-            <a href="home.visite.html" style="color: white; text-decoration: none;">Retour</a>
+            <a href="home.patient.html" style="color: white; text-decoration: none;">Retour Menu</a>
             </button>
         </div>
     <meta charset="UTF-8">
@@ -71,7 +71,10 @@ try {
                 <label for="searchNISS">Entrez le NISS du patient à modifier :</label>
                 <input type="text" class="form-control" id="searchNISS" name="searchNISS" placeholder="Numéro NISS" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Rechercher</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="afficher.patient.php" class="btn btn-secondary">Afficher les patients</a>
+            </div>
         </form>
 
         <?php
@@ -133,7 +136,18 @@ try {
             </div>
             <div class="form-group">
                 <label for="numeroInamiMedecin">Numéro Inami du médecin traitant (optionnel)</label>
-                <input type="text" class="form-control" id="numeroInamiMedecin" name="numeroInamiMedecin" value="<?php echo htmlspecialchars($patient['numeroInamiMedecin']); ?>">
+                <select class="form-control" id="numeroInamiMedecin" name="numeroInamiMedecin">
+                    <option value="">-- Sélectionnez un médecin traitant --</option>
+                    <?php
+                    $stmt = $base->query("SELECT numeroInamiMedecin, Nom, Prenom FROM medecintraitant");
+                    while ($med = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $selected = $patient['numeroInamiMedecin'] == $med['numeroInamiMedecin'] ? 'selected' : '';
+                        echo '<option value="' . htmlspecialchars($med['numeroInamiMedecin']) . '" ' . $selected . '>' 
+                            . htmlspecialchars($med['Nom']) . ' - ' 
+                            . htmlspecialchars($med['Prenom']) . '</option>';
+                    }
+                    ?>
+                </select>
             </div>
             <div class="form-group">
                 <label for="idAssurabilite">Numéro Assurabilité</label>

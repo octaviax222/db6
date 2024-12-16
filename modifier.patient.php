@@ -9,7 +9,7 @@ try {
     echo "Connexion à la base de données réussie<br>";
 
     $idmod = $_POST['idmod'];
-    $numeroNISS = $_POST['numeroNISS'];
+    $numeroNISS = $_POST['numeroNiss'];
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $dateDeNaissance = $_POST['dateDeNaissance'];
@@ -34,10 +34,7 @@ try {
         $updateFields = [];
         $params[':idmod'] = $idmod;
 
-        if (!empty($numeroNISS)) {
-            $updateFields[] = "numeroNISS = :numeroNiss";
-            $params[':numeroNiss'] = $numeroNISS;
-        }
+        
         if (!empty($nom)) {
             $updateFields[] = "nom = :nom";
             $params[':nom'] = $nom;
@@ -86,6 +83,21 @@ try {
             echo "Aucune donnée à mettre à jour.";
             exit;
         }
+
+        // 2. Mettre à jour le numeroNISS séparément si nécessaire
+    if (!empty($numeroNISS) && $numeroNISS != $idmod) {
+        $sqlUpdateNISS = "UPDATE patient SET numeroNISS = :newNumeroNiss WHERE numeroNISS = :idmod";
+        $stmtUpdateNISS = $base->prepare($sqlUpdateNISS);
+        $stmtUpdateNISS->execute([
+            ':newNumeroNiss' => $numeroNISS,
+            ':idmod' => $idmod
+        ]);
+    }
+
+    echo "<h3>Le rapport avec l'ID $idmod a été modifié avec succès.</h3>";
+    header("Location: home.patient.html");
+    exit;
+
     } else {
         // Affichage d'une alerte en cas d'erreur
         echo "<script>

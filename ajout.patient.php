@@ -64,9 +64,9 @@ echo $Resultat;
 
 if ($Resultat ==true){
 	echo "Patient ajouté avec succès !<br>";
-        $idVisite=113; // on met 3 mais cette valeur est a changé par 1 car l'id de la visite ne sera jamais associer a un rapport il faut juste la mettre en tant que ligne nécessaire dans le code qui permettra juste de remplir la table encode pour associer le patient au numéro inamie !
+        $idVisite=121; // on met 3 mais cette valeur est a changé par 1 car l'id de la visite ne sera jamais associer a un rapport il faut juste la mettre en tant que ligne nécessaire dans le code qui permettra juste de remplir la table encode pour associer le patient au numéro inamie !
         // Association du patient avec l'infirmière dans la table `encode`
-        $sqlEncode = "INSERT INTO encode (numeroInami, numeroNISS,idVisite) VALUES (:numeroInami, :numeroNISS,:idVisite)";
+        $sqlEncode = "INSERT INTO encode (numeroInami, numeroNiss, idVisite) VALUES (:numeroInami, :numeroNISS,:idVisite)";
         $stmtEncode = $base->prepare($sqlEncode);
         $stmtEncode->bindParam(':numeroInami', $numeroInami);
         $stmtEncode->bindParam(':numeroNISS', $numeroNISS);

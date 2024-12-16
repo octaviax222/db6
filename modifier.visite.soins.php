@@ -12,7 +12,7 @@ try {
 		$sqlCheck = "SELECT DISTINCT v.* 
         FROM visite v 
         JOIN encode e ON v.idVisite = e.idVisite
-        WHERE e.numeroInami = :numeroInami";
+        WHERE e.numeroInami = :numeroInami AND v.idVisite != 121";
 			$stmtCheck = $base->prepare($sqlCheck);
 			$stmtCheck->execute([':numeroInami' => $numeroInami]);
 
@@ -69,7 +69,10 @@ try {
                     <label for="searchVisite">Entrez l'ID de la visite :</label>
                     <input type="text" class="form-control" id="searchVisite" name="searchVisite" placeholder="ID de la visite" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Rechercher</button>
+                <div class="text-center">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="afficher.visite.php" class="btn btn-secondary">Afficher les visites</a>
+                </div>
             </form>
 
             <?php
@@ -87,6 +90,15 @@ try {
                     $visite = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($visite) {
+                        // Requête pour récupérer l'idInamiTypeSoins associé à la visite
+                        $stmtTypeSoins = $base->prepare("SELECT ts.idInamiTypeSoins, ts.descriptionTypeSoins
+                                                         FROM typeSoins ts
+                                                         JOIN soins s ON ts.idInamiTypeSoins = s.idInamiTypeSoins
+                                                         JOIN realise r ON s.idSoins = r.idSoins
+                                                         JOIN visite v ON r.idVisite = v.idVisite
+                                                         WHERE v.idVisite = ?");
+                        $stmtTypeSoins->execute([$searchVisite]);
+                        $typeSoins = $stmtTypeSoins->fetch(PDO::FETCH_ASSOC);
             ?>
             <!-- Formulaire pour modifier la visite -->
             <form action="modifier.visite.php" method="POST">
@@ -110,24 +122,27 @@ try {
                     <label for="heure">Heure de la visite</label>
                     <input type="time" class="form-control" id="heure" name="heure" value="<?= htmlspecialchars($visite['heure']) ?>" required>
                 </div>
+                
 
                 <div class="form-group">
-                    <label for="typeSoins">Description type de soin</label>
-                    <select class="form-control" id="typeSoins" name="idInamiTypeSoins" required>
-                        <option value="">-- Sélectionnez un soin --</option>
-                        <?php
-                        // Récupérer les types de soins
-                        $soinquery = "SELECT ts.idInamiTypeSoins, ts.descriptionTypeSoins FROM typeSoins ts";
-                        $stmt = $base->query($soinquery);
-                        $typeSoins = $stmt->fetchAll(PDO::FETCH_ASSOC); // On stocke les résultats dans un tableau associatif
+        <label for="typeSoins">Description type de soin</label>
+        <select class="form-control" id="typeSoins" name="idInamiTypeSoins" required>
+            <option value="">-- Sélectionnez un soin --</option>
+            <?php
+                // Récupérer tous les types de soins disponibles
+                $stmtSoins = $base->query("SELECT * FROM typeSoins");
+                $typeSoinsList = $stmtSoins->fetchAll(PDO::FETCH_ASSOC);
 
-                        foreach ($typeSoins as $soin) {
-                            $selected = ($soin['idInamiTypeSoins'] == $visite['idInamiTypeSoins']) ? 'selected' : '';
-                            echo '<option value="' . $soin['idInamiTypeSoins'] . '" ' . $selected . '>' . htmlspecialchars($soin['descriptionTypeSoins']) . '</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
+                // Boucle pour afficher les options de soins
+                foreach ($typeSoinsList as $soin) {
+                    // Vérifie si l'ID du type de soin correspond à celui de la visite
+                    $selected = ($soin['idInamiTypeSoins'] == $typeSoins['idInamiTypeSoins']) ? 'selected' : '';
+                    echo '<option value="' . $soin['idInamiTypeSoins'] . '" ' . $selected . '>' . htmlspecialchars($soin['descriptionTypeSoins']) . '</option>';
+                }
+            ?>
+        </select>
+    </div>
+            </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Modifier la visite</button>
             </form>

@@ -71,7 +71,7 @@ echo "Erreur de connexion : " . $e->getMessage();
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-danger">Supprimer</button>
-                <a href="afficher.patient.html" class="btn btn-secondary">Afficher les patients</a>
+                <a href="afficher.patient.php" class="btn btn-secondary">Afficher les patients</a>
             </div>
         </form>
     </div>
@@ -111,13 +111,13 @@ try {
 				$deleteStmt->execute([':supp' => $supp]);
 
 				echo "<br>le client ".$supp." est supprimé";
-				header("location:afficher.patient.html");
+				header("location:afficher.patient.php");
 				exit;
 			} else {
 				// Affichage d'une alerte en cas d'erreur
 				echo "<script>
 					alert('Erreur : Ce patient ne vous appartient pas ou n\'existe pas.');
-					window.location.href = 'afficher.patient.html';
+					window.location.href = 'afficher.patient.php';
 				</script>";
 				exit;
 			}

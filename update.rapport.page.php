@@ -71,7 +71,10 @@ try {
                 <label for="searchRapport">Entrez l'ID du rapport à modifier :</label>
                 <input type="text" class="form-control" id="searchRapport" name="searchRapport" placeholder="ID du rapport" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Rechercher</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="afficher.rapport.php" class="btn btn-secondary">Afficher les rapports</a>
+                </div>
         </form>
 
         <?php

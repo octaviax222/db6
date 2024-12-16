@@ -9,9 +9,9 @@ try {
 	$base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	
 
-	$sqlCheck = "SELECT DISTINCT visite.* FROM visite
-				JOIN encode e ON visite.idVisite = e.idVisite 
-                WHERE e.numeroInami = :numeroInami";
+	$sqlCheck = "SELECT v.* FROM visite v
+				JOIN encode e ON v.idVisite = e.idVisite 
+                WHERE e.numeroInami = :numeroInami AND v.idVisite != 121";
 		$stmtCheck = $base->prepare($sqlCheck);
 		$stmtCheck->execute([':numeroInami' => $numeroInami]);
 
@@ -19,34 +19,31 @@ try {
 		if ($stmtCheck->rowCount() == 0) {
 
 			echo '
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Aucun rapport disponible</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
-</head>
-<body>
-	<div class="container mt-5">
-		<div class="alert alert-warning text-center" role="alert">
-			<h4>Aucune visite n\'est encodée pour le moment.</h4>
-		</div>
-		<div class="text-center mt-3">
-			<a href="home.visite.html" class="btn btn-primary">Retour au menu de la gestion des visites</a>
-		</div>
-	</div>
-</body>
-</html>';
-exit;
+			<!DOCTYPE html>
+			<html lang="fr">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Aucun rapport disponible</title>
+				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+			</head>
+			<body>
+				<div class="container mt-5">
+					<div class="alert alert-warning text-center" role="alert">
+						<h4>Aucune visite n\'est encodée pour le moment.</h4>
+					</div>
+					<div class="text-center mt-3">
+						<a href="home.visite.html" class="btn btn-primary">Retour au menu de la gestion des visites</a>
+					</div>
+				</div>
+			</body>
+			</html>';
+			exit;
 		}
-		
-}
-catch (PDOException $e) {
-echo "Erreur de connexion : " . $e->getMessage();
-}
+}	catch (PDOException $e) {
+	echo "Erreur de connexion : " . $e->getMessage();
+	}		
 ?>
-
 <!DOCTYPE html>
 <html>
 <html lang="fr">
@@ -72,7 +69,7 @@ echo "Erreur de connexion : " . $e->getMessage();
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-danger">Supprimer</button>
-                <a href="afficher.visite.html" class="btn btn-secondary">Afficher les visites</a>
+                <a href="afficher.visite.php" class="btn btn-secondary">Afficher les visites</a>
             </div>
         </form>
     </div>
@@ -80,17 +77,18 @@ echo "Erreur de connexion : " . $e->getMessage();
     <script>
         // Message de confirmation avant la suppression
         function confirmDelete() {
-            return confirm("Êtes-vous sûr de vouloir supprimer ce patient ?");
+            return confirm("Êtes-vous sûr de vouloir supprimer cette visite ?");
         }
     </script>
 </body>
 </html>
-
 <?php
-$supp = isset($_POST['numeroRapport']) ? $_POST['numeroRapport'] : null;
-// Traitement de la suppression après soumission du formulaire
-try {
-    if ($supp !== null) { // Vérifie si la variable $supp est définie
+
+$supp = isset($_POST['idVisite']) ? $_POST['idVisite'] : null;
+
+try{
+
+	if ($supp !== null) { // Vérifie si la variable $supp est définie
         
 		$base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
         $base->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -111,21 +109,19 @@ try {
 				$deleteStmt->execute([':supp' => $supp]);
 
 				echo "<br>la visite ".$supp." est supprimée";
-				header("location:afficher.visite.html");
+				header("location:afficher.visite.php");
 				exit;
 			} else {
 				// Affichage d'une alerte en cas d'erreur
 				echo "<script>
-					alert('Erreur : Ce patient ne vous appartient pas ou n\'existe pas.');
-					window.location.href = 'afficher.visite.html';
+					alert('Erreur : Cette visite ne vous appartient pas ou n\'existe pas.');
+					window.location.href = 'afficher.visite.php';
 				</script>";
 				exit;
 			}
- 
 	}
-} catch (PDOException $e) {
+}catch (PDOException $e) {
 	echo "Erreur de connexion ou d'exécution : " . $e->getMessage();
 	exit;
 }
-
 ?>

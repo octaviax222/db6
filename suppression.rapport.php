@@ -73,7 +73,7 @@ try {
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-danger">Supprimer</button>
-                <a href="afficher.rapport.html" class="btn btn-secondary">Afficher les rapports</a>
+                <a href="afficher.rapport.php" class="btn btn-secondary">Afficher les rapports</a>
             </div>
         </form>
     </div>
@@ -106,6 +106,11 @@ try {
         $stmt->execute([':numeroInami' => $numeroInami, ':supp' => $supp]);
 
         if ($stmt->rowCount() > 0) {
+            // Remettre à NULL les idRapport des visites liées
+            $resetStmt = $base->prepare("UPDATE visite SET idRapport = NULL WHERE idRapport = :idRapport");
+            $resetStmt->bindParam(':idRapport', $supp);
+            $resetStmt->execute();
+
             // Supprimer le rapport
             $deleteSql = "DELETE FROM rapportpatient WHERE IdRapport = :supp";
             $deleteStmt = $base->prepare($deleteSql);
