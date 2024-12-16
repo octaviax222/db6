@@ -77,7 +77,7 @@
 
                 try {
                     $base = new PDO('mysql:host=143.47.179.70:443;dbname=db6', 'user6', 'user6');
-                    $sql = "SELECT 
+                    $sql = "SELECT DISTINCT
                             p.numeroNiss, 
                             p.nom, 
                             p.prenom, 
