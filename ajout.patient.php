@@ -126,8 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
             <div class="form-group">
-                <label for="numeroInamiMedecin">Numéro Inami du médecin traitant (optionnel)</label>
-                <select class="form-control" id="numeroInamiMedecin" name="numeroInamiMedecin">
+                <label for="numeroInamiMedecin">Numéro Inami du médecin traitant </label>
+                <select class="form-control" id="numeroInamiMedecin" name="numeroInamiMedecin" required>
                     <option value="">-- Sélectionnez un médecin traitant --</option>
                     <?php
                     $sql = "SELECT numeroInamiMedecin, nom, prenom FROM medecintraitant ORDER BY nom, prenom";
